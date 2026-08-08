@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 const labelClasses =
   "block font-ui text-[11px] uppercase tracking-[0.06em] text-fg/50 mb-2.5";
 const inputClasses =
-  "w-full border-0 border-b border-fg/15 bg-transparent pb-2.5 font-body text-sm text-fg outline-none transition-colors focus:border-magenta";
+  "w-full border-0 border-b-2 border-fg/15 bg-transparent pb-2.5 font-body text-sm text-fg outline-none transition-colors focus-visible:border-magenta focus:border-magenta";
 
 function Field({
   id,
