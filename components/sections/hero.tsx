@@ -19,7 +19,7 @@ export function Hero() {
             src="/brand/knwldg-mark-gradient.svg"
             alt=""
             width={820}
-            height={409}
+            height={410}
             priority
             className="h-auto w-full"
           />

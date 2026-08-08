@@ -1,12 +1,14 @@
 import { STATS } from "@/data/stats";
 import { cn } from "@/lib/utils";
+import { Reveal } from "@/components/ui/reveal";
 
 export function StatsStrip() {
   return (
     <div className="grid grid-cols-2 border-b border-fg/10 content:grid-cols-4">
       {STATS.map((stat, i) => (
-        <div
+        <Reveal
           key={stat.label}
+          delay={i * 0.08}
           className={cn(
             "border-fg/10 px-6 py-6.5",
             i % 2 === 0 && "border-r",
@@ -26,7 +28,7 @@ export function StatsStrip() {
           <div className="mt-1.5 font-ui text-[11px] tracking-[0.08em] text-fg/50">
             {stat.label}
           </div>
-        </div>
+        </Reveal>
       ))}
     </div>
   );

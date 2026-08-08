@@ -1,4 +1,7 @@
+"use client";
+
 import type { ButtonHTMLAttributes, AnchorHTMLAttributes } from "react";
+import { motion, type HTMLMotionProps } from "motion/react";
 import { cn } from "@/lib/utils";
 
 const BASE =
@@ -12,15 +15,17 @@ const VARIANTS = {
 
 type Variant = keyof typeof VARIANTS;
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: Variant;
-  href?: undefined;
-};
+type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, keyof HTMLMotionProps<"button">> &
+  HTMLMotionProps<"button"> & {
+    variant?: Variant;
+    href?: undefined;
+  };
 
-type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
-  variant?: Variant;
-  href: string;
-};
+type LinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof HTMLMotionProps<"a">> &
+  HTMLMotionProps<"a"> & {
+    variant?: Variant;
+    href: string;
+  };
 
 export function Button({
   variant = "gradient",
@@ -30,10 +35,12 @@ export function Button({
   const classes = cn(BASE, VARIANTS[variant], className);
 
   if ("href" in props && props.href) {
-    return <a className={classes} {...(props as LinkProps)} />;
+    return (
+      <motion.a whileTap={{ scale: 0.97 }} className={classes} {...(props as LinkProps)} />
+    );
   }
 
   return (
-    <button className={classes} {...(props as ButtonProps)} />
+    <motion.button whileTap={{ scale: 0.97 }} className={classes} {...(props as ButtonProps)} />
   );
 }
