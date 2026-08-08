@@ -16,8 +16,10 @@ export const bookingSchema = z.object({
   servicesNeeded: z.string().trim().max(300).optional().or(z.literal("")),
   budget: z.enum(budgetTuple).optional(),
   eventDetails: z.string().trim().max(2000).optional().or(z.literal("")),
-  // Honeypot: real visitors never see or fill this field. Any value fails validation.
-  company: z.string().max(0).optional().or(z.literal("")),
+  // Honeypot: accepts any value so a filled field doesn't surface as a visible
+  // validation error (which would tip bots off) - the route silently drops
+  // the submission instead when this is non-empty.
+  company: z.string().optional(),
   // Client-set timestamp used server-side to reject submissions sent implausibly fast.
   formRenderedAt: z.number().optional(),
 });
