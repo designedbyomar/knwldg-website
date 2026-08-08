@@ -58,7 +58,7 @@ export function Hero() {
             Check Availability
           </Button>
 
-          <div className="mt-4.5 pb-8 font-ui text-xs tracking-[0.04em] text-fg/45">
+          <div className="mt-4.5 pb-8 font-ui text-xs tracking-[0.04em] text-fg/55">
             15+ YEARS&nbsp;&nbsp;&bull;&nbsp;&nbsp;OPEN FORMAT&nbsp;&nbsp;&bull;&nbsp;&nbsp;SOUND + LIGHTING
           </div>
         </div>
