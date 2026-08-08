@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { LaserFallback } from "@/components/three/laser-fallback";
+import { LaserHeroSceneLoader } from "@/components/three/laser-hero-scene-loader";
 
 export function Hero() {
   return (
@@ -8,12 +9,13 @@ export function Hero() {
       id="hero"
       className="relative overflow-hidden bg-bg px-6 pb-10 text-center [isolation:isolate] sm:px-8"
     >
-      <LaserFallback />
+      <LaserHeroSceneLoader />
+      <LaserFallback className="z-20" />
 
       <div className="relative pt-1.5">
         <div
           aria-hidden
-          className="absolute left-1/2 top-[8%] z-0 w-[min(820px,110%)] -translate-x-1/2 opacity-90"
+          className="absolute left-1/2 top-[8%] z-30 w-[min(820px,110%)] -translate-x-1/2 opacity-90"
         >
           <Image
             src="/brand/knwldg-mark-gradient.svg"
@@ -25,7 +27,7 @@ export function Hero() {
           />
         </div>
 
-        <div className="relative z-10 mx-auto mt-4 w-[clamp(220px,60vw,360px)]">
+        <div className="relative z-40 mx-auto mt-4 w-[clamp(220px,60vw,360px)]">
           <Image
             src="/brand/knwldg-photo.png"
             alt="KNWLDG performing"
@@ -40,13 +42,13 @@ export function Hero() {
           />
         </div>
 
-        <div className="relative z-10 mx-auto mt-3 max-w-[640px] px-8">
+        <div className="relative z-50 mx-auto mt-3 max-w-[640px] px-8">
           <h1 className="font-display text-[clamp(22px,6vw,26px)] uppercase tracking-[0.01em] text-fg">
             Sound. Energy. Atmosphere.
           </h1>
         </div>
 
-        <div className="relative z-10 mt-2.5 text-center">
+        <div className="relative z-50 mt-2.5 text-center">
           <p className="mx-auto max-w-[480px] font-body text-[15px] leading-relaxed text-fg/60">
             Weddings, corporate events, festivals, nightlife, and private events across
             Connecticut, the NYC metro, western Massachusetts, and the Northeast.
