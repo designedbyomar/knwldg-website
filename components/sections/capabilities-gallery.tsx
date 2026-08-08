@@ -1,10 +1,11 @@
 import { CAPABILITIES, GALLERY } from "@/data/capabilities";
 import { Chip } from "@/components/ui/chip";
+import { Reveal } from "@/components/ui/reveal";
 
 export function CapabilitiesGallery() {
   return (
     <section className="border-b border-fg/10 px-5 py-14 content:px-14 content:py-20">
-      <div className="mb-10 grid grid-cols-1 gap-8 content:grid-cols-[280px_1fr] content:gap-12">
+      <Reveal className="mb-10 grid grid-cols-1 gap-8 content:grid-cols-[280px_1fr] content:gap-12">
         <h2 className="font-display text-[32px] uppercase text-fg">
           More than just a playlist.
         </h2>
@@ -19,12 +20,13 @@ export function CapabilitiesGallery() {
             ))}
           </div>
         </div>
-      </div>
+      </Reveal>
 
       <div className="grid grid-cols-1 gap-px bg-fg/10 content:grid-cols-5">
-        {GALLERY.map((item) => (
-          <div
+        {GALLERY.map((item, i) => (
+          <Reveal
             key={item.label}
+            delay={i * 0.06}
             className="flex aspect-3/4 items-center justify-center p-4 text-center"
             style={{
               backgroundImage:
@@ -34,7 +36,7 @@ export function CapabilitiesGallery() {
             <span className="font-ui text-[10px] uppercase tracking-[0.08em] text-fg/70">
               {item.label}
             </span>
-          </div>
+          </Reveal>
         ))}
       </div>
     </section>
