@@ -74,6 +74,8 @@ describe("booking rate limiter", () => {
     vi.stubEnv("VERCEL_ENV", "preview");
     vi.stubEnv("UPSTASH_REDIS_REST_URL", "https://example.upstash.io");
     vi.stubEnv("UPSTASH_REDIS_REST_TOKEN", "test-token");
+    vi.stubEnv("KV_REST_API_URL", "");
+    vi.stubEnv("KV_REST_API_TOKEN", "");
     vi.stubEnv("RATE_LIMIT_SALT", "test-only-hmac-salt");
   });
 
@@ -110,6 +112,18 @@ describe("booking rate limiter", () => {
       prefix: "knwldg:booking:preview",
       analytics: false,
       timeout: 1_000,
+    });
+  });
+
+  it("accepts the Vercel Marketplace Redis variable names", async () => {
+    vi.stubEnv("UPSTASH_REDIS_REST_URL", "");
+    vi.stubEnv("UPSTASH_REDIS_REST_TOKEN", "");
+    vi.stubEnv("KV_REST_API_URL", "https://marketplace.upstash.io");
+    vi.stubEnv("KV_REST_API_TOKEN", "marketplace-token");
+    const { checkBookingRateLimit } = await loadRateLimiter();
+
+    await expect(checkBookingRateLimit(requestFrom("203.0.113.25"))).resolves.toMatchObject({
+      outcome: "allowed",
     });
   });
 
