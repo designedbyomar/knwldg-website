@@ -1,13 +1,17 @@
 import { NextResponse } from "next/server";
+import { checkBookingRateLimit } from "@/lib/booking-rate-limit";
 import { bookingSchema, type BookingFormValues } from "@/lib/validations/booking-schema";
 import { getResendClient } from "@/lib/resend";
+
+export const runtime = "nodejs";
 
 // Submissions faster than this are almost certainly automated, not a human
 // filling out an 8-field form.
 const MIN_SUBMIT_MS = 1200;
 
-const TO_EMAIL = process.env.BOOKING_TO_EMAIL ?? "hello@djknwldg.com";
-const FROM_EMAIL = process.env.BOOKING_FROM_EMAIL ?? "KNWLDG Bookings <onboarding@resend.dev>";
+const RATE_LIMIT_ERROR = "Too many booking attempts. Please try again later.";
+const SERVICE_UNAVAILABLE_ERROR =
+  "Booking service is temporarily unavailable. Please try again later.";
 
 function formatBookingEmail(data: BookingFormValues): string {
   const lines = [
@@ -26,16 +30,38 @@ function formatBookingEmail(data: BookingFormValues): string {
 }
 
 export async function POST(request: Request) {
+  const rateLimit = await checkBookingRateLimit(request);
+
+  if (rateLimit.outcome === "unavailable") {
+    return NextResponse.json(
+      { error: SERVICE_UNAVAILABLE_ERROR },
+      { status: 503, headers: rateLimit.headers }
+    );
+  }
+
+  if (rateLimit.outcome === "limited") {
+    return NextResponse.json(
+      { error: RATE_LIMIT_ERROR },
+      { status: 429, headers: rateLimit.headers }
+    );
+  }
+
   let body: unknown;
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid request body" },
+      { status: 400, headers: rateLimit.headers }
+    );
   }
 
   const parsed = bookingSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid submission" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid submission" },
+      { status: 400, headers: rateLimit.headers }
+    );
   }
 
   const data = parsed.data;
@@ -46,26 +72,35 @@ export async function POST(request: Request) {
   const isTooFast =
     data.formRenderedAt !== undefined && Date.now() - data.formRenderedAt < MIN_SUBMIT_MS;
   if (isHoneypotFilled || isTooFast) {
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true }, { headers: rateLimit.headers });
   }
 
-  if (!process.env.RESEND_API_KEY) {
-    console.error("RESEND_API_KEY is not configured; booking email not sent.", data);
-    return NextResponse.json({ error: "Booking service not configured" }, { status: 500 });
+  const apiKey = process.env.RESEND_API_KEY;
+  const fromEmail = process.env.BOOKING_FROM_EMAIL;
+  const toEmail = process.env.BOOKING_TO_EMAIL;
+  if (!apiKey || !fromEmail || !toEmail) {
+    console.error("[booking] email configuration is unavailable");
+    return NextResponse.json(
+      { error: SERVICE_UNAVAILABLE_ERROR },
+      { status: 503, headers: rateLimit.headers }
+    );
   }
 
   try {
     await getResendClient().emails.send({
-      from: FROM_EMAIL,
-      to: TO_EMAIL,
+      from: fromEmail,
+      to: toEmail,
       replyTo: data.email,
       subject: `New booking inquiry - ${data.name} (${data.eventType})`,
       text: formatBookingEmail(data),
     });
-  } catch (error) {
-    console.error("Failed to send booking email", error);
-    return NextResponse.json({ error: "Failed to send" }, { status: 500 });
+  } catch {
+    console.error("[booking] email provider request failed");
+    return NextResponse.json(
+      { error: "Failed to send booking inquiry" },
+      { status: 500, headers: rateLimit.headers }
+    );
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true }, { headers: rateLimit.headers });
 }

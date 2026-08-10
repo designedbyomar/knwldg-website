@@ -7,6 +7,8 @@ import { bookingSchema, type BookingFormValues } from "@/lib/validations/booking
 import { EVENT_TYPE_OPTIONS, BUDGET_OPTIONS } from "@/data/budget-options";
 import { Chip } from "@/components/ui/chip";
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-picker";
+import { getBusinessTodayIso } from "@/lib/business-date";
 import { cn } from "@/lib/utils";
 
 const labelClasses =
@@ -31,14 +33,21 @@ function Field({
         {label}
       </label>
       {children}
-      {error ? <p className="mt-1.5 text-xs text-magenta">{error}</p> : null}
+      {error ? (
+        <p id={`${id}-error`} className="mt-1.5 text-xs text-magenta">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }
 
 export function BookingForm() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
   const [renderedAt] = useState(() => Date.now());
+  const [minDateIso] = useState(() => getBusinessTodayIso());
+  const isSubmitting = status === "submitting";
 
   const {
     register,
@@ -47,27 +56,54 @@ export function BookingForm() {
     formState: { errors },
   } = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
-    defaultValues: { company: "" },
+    defaultValues: { company: "", eventDate: "" },
   });
 
   async function onSubmit(data: BookingFormValues) {
     setStatus("submitting");
+    setErrorMessage("");
     try {
       const res = await fetch("/api/booking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...data, formRenderedAt: renderedAt }),
       });
-      if (!res.ok) throw new Error("Request failed");
+      if (!res.ok) {
+        const responseBody: unknown = await res.json().catch(() => null);
+        const serverMessage =
+          responseBody &&
+          typeof responseBody === "object" &&
+          "error" in responseBody &&
+          typeof responseBody.error === "string"
+            ? responseBody.error
+            : null;
+
+        if ((res.status === 429 || res.status === 503) && serverMessage) {
+          setErrorMessage(serverMessage);
+        } else {
+          setErrorMessage(
+            "Something went wrong sending that. Try again, or email hello@djknwldg.com directly."
+          );
+        }
+        setStatus("error");
+        return;
+      }
       setStatus("success");
     } catch {
+      setErrorMessage(
+        "Something went wrong sending that. Try again, or email hello@djknwldg.com directly."
+      );
       setStatus("error");
     }
   }
 
   if (status === "success") {
     return (
-      <div className="max-w-[600px] border border-fg/15 px-8 py-10">
+      <div
+        role="status"
+        aria-live="polite"
+        className="max-w-[600px] border border-fg/15 px-8 py-10"
+      >
         <div className="font-display text-2xl uppercase text-fg">Got it.</div>
         <p className="mt-3 font-body text-sm leading-relaxed text-fg/65">
           Your inquiry is in. Expect a reply within 24 hours &mdash; usually much sooner.
@@ -77,7 +113,13 @@ export function BookingForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="max-w-[600px]">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      noValidate
+      aria-busy={isSubmitting}
+      className="max-w-[600px]"
+    >
+      <fieldset disabled={isSubmitting} className="contents">
       {/* Honeypot — hidden from sighted users, left for bots to fill. */}
       <div className="absolute h-px w-px overflow-hidden opacity-0" aria-hidden="true">
         <label htmlFor="company">Company</label>
@@ -107,7 +149,21 @@ export function BookingForm() {
           </select>
         </Field>
         <Field id="eventDate" label="Event Date" error={errors.eventDate?.message}>
-          <input id="eventDate" type="date" className={inputClasses} {...register("eventDate")} />
+          <Controller
+            name="eventDate"
+            control={control}
+            render={({ field }) => (
+              <DatePicker
+                id="eventDate"
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                invalid={Boolean(errors.eventDate)}
+                describedBy={errors.eventDate ? "eventDate-error" : undefined}
+                minDateIso={minDateIso}
+              />
+            )}
+          />
         </Field>
         <Field id="venue" label="Venue / City" error={errors.venue?.message}>
           <input id="venue" type="text" className={inputClasses} {...register("venue")} />
@@ -158,18 +214,20 @@ export function BookingForm() {
         />
       </Field>
 
-      {status === "error" ? (
-        <p className="mt-5 font-ui text-xs text-magenta">
-          Something went wrong sending that. Try again, or email hello@djknwldg.com directly.
-        </p>
-      ) : null}
+      </fieldset>
+
+      <div aria-live="polite" aria-atomic="true">
+        {status === "error" ? (
+          <p className="mt-5 font-ui text-xs text-magenta">{errorMessage}</p>
+        ) : null}
+      </div>
 
       <Button
         type="submit"
-        disabled={status === "submitting"}
-        className={cn("mt-8 px-8 py-3.5 text-[13px]", status === "submitting" && "opacity-60")}
+        disabled={isSubmitting}
+        className={cn("mt-8 px-8 py-3.5 text-[13px]", isSubmitting && "opacity-60")}
       >
-        {status === "submitting" ? "Sending..." : "Request Availability"}
+        {isSubmitting ? "Sending..." : "Request Availability"}
       </Button>
     </form>
   );

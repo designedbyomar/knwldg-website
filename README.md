@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# KNWLDG
 
-## Getting Started
+Marketing site for KNWLDG, an open-format DJ working weddings, corporate events,
+festivals, private events and nightlife across Connecticut, the NYC metro,
+western Massachusetts and the wider Northeast.
 
-First, run the development server:
+One long-form landing page. The only conversion is the booking inquiry form,
+which emails through [Resend](https://resend.com).
+
+## Requirements
+
+- Node `>=20.9` (Next.js 16 requirement)
+- npm
+
+## Setup
 
 ```bash
+npm install
+cp .env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open <http://localhost:3000>.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The visual site runs without environment configuration. The booking endpoint
+requires the production variables below and returns a user-safe `503` when its
+rate-limit or email infrastructure is unavailable. In local development only,
+the rate limiter is bypassed when Upstash is not configured; email still
+requires all three Resend variables.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Environment
 
-## Learn More
+| Variable | Purpose |
+|---|---|
+| `UPSTASH_REDIS_REST_URL` | REST URL for the shared Upstash Redis database. |
+| `UPSTASH_REDIS_REST_TOKEN` | Secret REST token for that database. |
+| `RATE_LIMIT_SALT` | Private random value used to HMAC client addresses before they become Redis identifiers. |
+| `RESEND_API_KEY` | Production Resend API key. |
+| `BOOKING_FROM_EMAIL` | Required sender on the verified domain: `KNWLDG Bookings <bookings@djknwldg.com>`. |
+| `BOOKING_TO_EMAIL` | Required delivery inbox: `hello@djknwldg.com`. |
 
-To learn more about Next.js, take a look at the following resources:
+`.env*` is gitignored. Never commit real keys.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The booking route allows 10 attempts per client address in a sliding one-hour
+window. Preview and Production use separate Redis prefixes. Addresses are HMAC
+hashed before use, and Upstash analytics is disabled. A one-second Upstash
+timeout fails open with a non-identifying warning; missing or rejected
+production infrastructure fails closed.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Vercel launch setup
 
-## Deploy on Vercel
+1. Connect the repository to Vercel and link a US-region Upstash Redis database
+   to Preview and Production.
+2. Generate a private random `RATE_LIMIT_SALT` and add it to both environments.
+3. Verify `djknwldg.com` in Resend, create a production API key, and set the
+   three booking email variables exactly as shown in `.env.example`.
+4. Redeploy, then submit one real inquiry and verify delivery and reply-to
+   behavior before directing traffic to the site.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Commands
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run dev      # Turbopack dev server on :3000
+npm run build    # production build
+npm run start    # serve the production build
+npm run lint     # eslint
+npm run test     # Vitest suite once
+npm run test:watch # Vitest in watch mode
+npx tsc --noEmit # typecheck
+```
+
+## Layout
+
+```
+app/            routes, globals.css (design tokens), api/booking
+components/
+  layout/       nav, footer, container
+  sections/     one file per page section
+  three/        the WebGL laser rig used by the hero
+  ui/           shared primitives
+data/           page copy, lists, and the brand colour ramp
+lib/            helpers, Resend client, Zod schemas
+public/brand/   logo, portrait, portrait mask
+```
+
+Design tokens (colour, type, breakpoints) live in the `@theme` block at the top
+of `app/globals.css`. This is Tailwind v4 — there is no `tailwind.config`.
+
+`/designsystem` serves an internal design-system reference. It is intentionally
+not linked from the nav.
+
+## Contributing
+
+Read [`AGENTS.md`](./AGENTS.md) first. It covers the conventions and, more
+importantly, the constants in the hero that look arbitrary but are load-bearing —
+including an accessibility ceiling on the strobe rate.
+
+If you are touching the hero, also read [`docs/hero-rig.md`](./docs/hero-rig.md)
+and [`docs/verifying-visuals.md`](./docs/verifying-visuals.md).

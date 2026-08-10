@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 const BASE = "font-ui text-xs tracking-normal inline-block transition-colors";
 
 const VARIANTS = {
-  indigo: "border border-indigo/45 bg-indigo/12 text-indigo px-4 py-2",
+  violet: "border border-violet/45 bg-violet/12 text-violet px-4 py-2",
   "outline-dark": "border border-ink/30 text-ink/85 px-4.5 py-2.5",
 } as const;
 
@@ -23,7 +23,7 @@ type ChipButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 export function Chip({
-  variant = "indigo",
+  variant = "violet",
   selected,
   className,
   as = "span",
@@ -32,7 +32,7 @@ export function Chip({
   const classes = cn(
     BASE,
     VARIANTS[variant],
-    selected && "brand-gradient border-transparent text-ink",
+    selected && "border-violet bg-violet font-semibold text-ink",
     className
   );
 
