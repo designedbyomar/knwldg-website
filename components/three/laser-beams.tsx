@@ -1,101 +1,165 @@
 "use client";
 
-import { useMemo, useRef } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useEffect, useMemo, useRef } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { beamVertexShader, beamFragmentShader } from "./shaders/beam.glsl";
-import { BRAND_MAGENTA_RGB, BRAND_VIOLET_RGB } from "@/data/theme-tokens";
+import { BRAND_RAMP_LINEAR } from "@/data/theme-tokens";
+import { getLaserBeat } from "./laser-clock";
+import { sampleBeam, type BeamPose } from "./laser-choreography";
 
-const BEAM_COUNT = 6;
-const BEAM_LENGTH = 3.8;
-const BEAM_WIDTH = 0.1;
-const ANCHOR = new THREE.Vector3(0, 1.35, -0.4);
+// Sits behind the portrait's upper body, above the band where the CSS mask
+// starts fading the layer out - otherwise the brightest part of every beam
+// (the emitter flare) lands in the fade and the fan reads washed out.
+//
+// This is low on purpose: the fan wants to radiate from behind his chest, not
+// from over his head. It was briefly raised to 0.95 to clear a much taller fade
+// band; the band was relaxed instead (see LASER_FADE_START_PX) and the black
+// floor scrim took over the job of hiding beams behind his dissolving lower
+// half, which is what lets the emitter sit back down here.
+export const ANCHOR = new THREE.Vector3(0, 0.15, -1.2);
+/** Deepest plane a beam can occupy once z-jitter is applied. */
+const BEAM_PLANE_Z = ANCHOR.z - 0.4;
+const BEAM_OVERSHOOT = 1.12;
 
-type BeamInstance = {
-  baseAngle: number;
-  swaySpeed: number;
-  swayAmount: number;
-  phase: number;
-  length: number;
-};
+const BEAM_QUAD_WIDTH = 0.26;
+const BEAM_CORE_SIGMA = 0.005;
+const BEAM_HALO_SIGMA = 0.022;
+const BEAM_SOURCE_GAIN = 1.4;
+// Very light: beams have to still read at the frame edges, so this is a hint
+// of atmosphere rather than a falloff.
+const BEAM_ATTEN = 0.18;
 
 const dummy = new THREE.Object3D();
+const pose: BeamPose = { angle: 0, intensity: 0 };
 
-// Randomized once at module-evaluation time, not during render - the exact
-// values never need to change, and generating them here (rather than in a
-// useMemo factory) keeps component render bodies pure for the React Compiler.
-function createInstanceConfigs(): BeamInstance[] {
-  return Array.from({ length: BEAM_COUNT }, (_, i) => {
-    const t = i / (BEAM_COUNT - 1);
-    return {
-      baseAngle: Math.PI + (t - 0.5) * 1.7,
-      swaySpeed: 0.25 + Math.random() * 0.2,
-      swayAmount: 0.12 + Math.random() * 0.1,
-      phase: Math.random() * Math.PI * 2,
-      length: BEAM_LENGTH * (0.85 + Math.random() * 0.3),
-    };
-  });
-}
-const INSTANCE_CONFIGS = createInstanceConfigs();
+type LaserBeamsProps = {
+  count: number;
+  opacity?: number;
+  coreGain: number;
+  haloGain: number;
+  lookBars: number;
+  /** Screen Y where the rig stops drawing, in NDC (+1 top, -1 bottom). */
+  cutoffNdc: number;
+  /** Height of the fade band above that line, in NDC units. */
+  cutoffBand: number;
+};
 
-function createSeeds(): Float32Array {
-  const seed = new Float32Array(BEAM_COUNT);
-  for (let i = 0; i < BEAM_COUNT; i++) seed[i] = Math.random();
-  return seed;
-}
-const SEED_VALUES = createSeeds();
-
-export function LaserBeams({ opacity = 1 }: { opacity?: number }) {
+export function LaserBeams({
+  count,
+  opacity = 1,
+  coreGain,
+  haloGain,
+  lookBars,
+  cutoffNdc,
+  cutoffBand,
+}: LaserBeamsProps) {
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
-  const instances = INSTANCE_CONFIGS;
+  const camera = useThree((state) => state.camera);
+  const viewport = useThree((state) => state.viewport);
 
   const geometry = useMemo(() => {
-    const geo = new THREE.PlaneGeometry(BEAM_WIDTH, 1, 1, 24);
-    geo.translate(0, 0.5, 0);
+    const geo = new THREE.PlaneGeometry(BEAM_QUAD_WIDTH, 1, 1, 1);
+    geo.translate(0, 0.5, 0); // pivot at the base, spans y 0..1
 
-    const colorMix = new Float32Array(BEAM_COUNT);
-    for (let i = 0; i < BEAM_COUNT; i++) colorMix[i] = i / (BEAM_COUNT - 1);
+    const colors = new Float32Array(count * 3);
+    const seeds = new Float32Array(count);
+    const intensities = new Float32Array(count).fill(1);
 
-    geo.setAttribute("aColorMix", new THREE.InstancedBufferAttribute(colorMix, 1));
-    geo.setAttribute("aSeed", new THREE.InstancedBufferAttribute(SEED_VALUES, 1));
+    for (let i = 0; i < count; i++) {
+      // Walk the full ramp across the fan so every brand hue appears and the
+      // spread stays symmetric.
+      const t = count === 1 ? 0.5 : i / (count - 1);
+      const stop = Math.round(t * (BRAND_RAMP_LINEAR.length - 1));
+      colors.set(BRAND_RAMP_LINEAR[stop], i * 3);
+      seeds[i] = (i * 0.173 + 0.11) % 1;
+    }
+
+    geo.setAttribute("aColor", new THREE.InstancedBufferAttribute(colors, 3));
+    geo.setAttribute("aSeed", new THREE.InstancedBufferAttribute(seeds, 1));
+    geo.setAttribute("aIntensity", new THREE.InstancedBufferAttribute(intensities, 1));
 
     return geo;
-  }, []);
+  }, [count]);
+
+  useEffect(() => () => geometry.dispose(), [geometry]);
 
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uColorA: { value: new THREE.Color(...BRAND_MAGENTA_RGB) },
-      uColorB: { value: new THREE.Color(...BRAND_VIOLET_RGB) },
       uOpacity: { value: opacity },
+      uQuadWidth: { value: BEAM_QUAD_WIDTH },
+      uCoreSigma: { value: BEAM_CORE_SIGMA },
+      uHaloSigma: { value: BEAM_HALO_SIGMA },
+      uCoreGain: { value: coreGain },
+      uHaloGain: { value: haloGain },
+      uSourceGain: { value: BEAM_SOURCE_GAIN },
+      uAtten: { value: BEAM_ATTEN },
+      uCutoffNdc: { value: cutoffNdc },
+      uCutoffBand: { value: cutoffBand },
     }),
-    [opacity]
+    // Values are pushed per-frame below; this only builds the initial object.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
   );
 
-  useFrame(({ clock }) => {
+  /**
+   * Distance from the anchor to the far corner of the frame, so beams leave the
+   * viewport at every aspect ratio instead of stopping somewhere inside it.
+   */
+  const reach = useMemo(() => {
+    const view = viewport.getCurrentViewport(camera, [0, 0, BEAM_PLANE_Z]);
+    return (
+      Math.hypot(
+        view.width / 2 + Math.abs(ANCHOR.x),
+        view.height / 2 + Math.abs(ANCHOR.y)
+      ) * BEAM_OVERSHOOT
+    );
+  }, [viewport, camera]);
+
+  useFrame(() => {
     const mesh = meshRef.current;
     if (!mesh) return;
 
-    const time = clock.getElapsedTime();
+    const beat = getLaserBeat();
+    const intensityAttribute = geometry.getAttribute(
+      "aIntensity"
+    ) as THREE.InstancedBufferAttribute;
+
     if (materialRef.current) {
-      materialRef.current.uniforms.uTime.value = time;
-      materialRef.current.uniforms.uOpacity.value = opacity;
+      const u = materialRef.current.uniforms;
+      u.uTime.value = beat;
+      u.uOpacity.value = opacity;
+      u.uCoreGain.value = coreGain;
+      u.uHaloGain.value = haloGain;
+      u.uCutoffNdc.value = cutoffNdc;
+      u.uCutoffBand.value = cutoffBand;
     }
 
-    instances.forEach((inst, i) => {
-      const angle = inst.baseAngle + Math.sin(time * inst.swaySpeed + inst.phase) * inst.swayAmount;
-      dummy.position.copy(ANCHOR);
-      dummy.rotation.set(0, 0, angle);
-      dummy.scale.set(1, inst.length, 1);
+    for (let i = 0; i < count; i++) {
+      sampleBeam(i, count, beat, pose, lookBars);
+
+      dummy.position.set(ANCHOR.x, ANCHOR.y, ANCHOR.z + ((i % 3) - 1) * 0.35);
+      dummy.rotation.set(0, 0, pose.angle);
+      dummy.scale.set(1, reach, 1);
       dummy.updateMatrix();
       mesh.setMatrixAt(i, dummy.matrix);
-    });
+      intensityAttribute.setX(i, pose.intensity);
+    }
+
     mesh.instanceMatrix.needsUpdate = true;
+    intensityAttribute.needsUpdate = true;
   });
 
   return (
-    <instancedMesh ref={meshRef} args={[geometry, undefined, BEAM_COUNT]} frustumCulled={false}>
+    <instancedMesh
+      ref={meshRef}
+      // key forces a fresh mesh when the tier changes the instance count
+      key={count}
+      args={[geometry, undefined, count]}
+      frustumCulled={false}
+    >
       <shaderMaterial
         ref={materialRef}
         vertexShader={beamVertexShader}
@@ -103,6 +167,7 @@ export function LaserBeams({ opacity = 1 }: { opacity?: number }) {
         uniforms={uniforms}
         transparent
         depthWrite={false}
+        depthTest={false}
         blending={THREE.AdditiveBlending}
       />
     </instancedMesh>

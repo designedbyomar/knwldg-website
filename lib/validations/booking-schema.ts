@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { BUDGET_OPTIONS } from "@/data/budget-options";
 import { EVENT_TYPE_OPTIONS } from "@/data/budget-options";
+import { getBusinessTodayIso } from "@/lib/business-date";
 
 const eventTypeTuple = EVENT_TYPE_OPTIONS as [string, ...string[]];
 const budgetTuple = BUDGET_OPTIONS as [string, ...string[]];
@@ -10,7 +11,11 @@ export const bookingSchema = z.object({
   email: z.string().trim().min(1, "Email is required").email("Enter a valid email"),
   phone: z.string().trim().max(40).optional().or(z.literal("")),
   eventType: z.enum(eventTypeTuple, { message: "Select an event type" }),
-  eventDate: z.string().trim().min(1, "Event date is required"),
+  eventDate: z
+    .iso.date({ error: "Enter a valid event date" })
+    .refine((value) => value >= getBusinessTodayIso(), {
+      message: "Choose today or a future date",
+    }),
   venue: z.string().trim().max(160).optional().or(z.literal("")),
   guestCount: z.string().trim().max(20).optional().or(z.literal("")),
   servicesNeeded: z.string().trim().max(300).optional().or(z.literal("")),
