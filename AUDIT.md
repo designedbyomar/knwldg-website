@@ -25,18 +25,21 @@ Status labels:
 | Pending | 5 | Honeypot telemetry, deduplication, structured logs, analyzer wiring, error tracking |
 | Accepted / N/A | 1 | Decorative laser canvas does not need an ARIA interaction label |
 
-The production build, lint, and 15 booking-focused tests pass. The booking endpoint now enforces a shared sliding limit and a New York business-date policy. Production sender verification and a real delivery/reply test remain external launch steps.
+The production build, lint, and 16 booking-focused tests pass. A Vercel Preview
+rollout also confirmed requests 1–10 succeed and request 11 returns `429` with
+the required quota headers. Production sender verification and a real
+delivery/reply test remain external launch steps.
 
 ## Reconciled workstreams
 
 | ID | Workstream | Status | Priority | Verified evidence and adjustment |
 |---|---|---|---|---|
-| A01 | Booking rate limiting | **Complete** | — | Upstash Redis now applies a 10-attempt sliding one-hour limit before body parsing. Identifiers are HMAC hashes, analytics is off, Vercel environments have separate prefixes, timeouts fail open after one second, and missing production configuration returns `503`. Tests verify attempts 1–10, attempt 11, and independent client buckets. |
+| A01 | Booking rate limiting | **Complete** | — | Upstash Redis now applies a 10-attempt sliding one-hour limit before body parsing. Identifiers are HMAC hashes, analytics is off, Vercel environments have separate prefixes, timeouts fail open after one second, and missing production configuration returns `503`. Unit tests verify attempts 1–10, attempt 11, and independent client buckets. A Vercel Preview honeypot rollout independently confirmed ten `200` responses followed by `429` with `Retry-After` and limit, remaining, and reset headers. |
 | A02 | Event-date validation | **Complete** | — | The shared schema requires a real ISO date on or after the current `America/New_York` business date. The calendar disables earlier days and prevents navigation before the allowed month. Tests cover malformed, impossible, yesterday, today, future, and New York midnight boundaries. |
 | A03 | WebGL cleanup and memory safety | **Partial** | P1 | The original audit called this a confirmed critical leak without runtime evidence. Current code disposes beam geometry, explicitly loses the hardware-probe context, and unmounts the canvas when the tier becomes `off`. GPU/context profiling across mount, resize, tier change, and revisit is still required. |
 | A04 | Honeypot telemetry | **Pending** | P1 | Bot submissions intentionally receive silent success, but no privacy-safe structured event is recorded. Implement only after the logging policy is defined. Do not log form contents or raw email addresses. |
 | A05 | Duplicate-submit protection | **Pending** | P1 | The button is disabled during the active request, which prevents ordinary double-clicks, but the API has no idempotency key or replay protection. |
-| A06 | Automated test runner | **Complete** | — | Vitest is configured with `test` and `test:watch` scripts. Fifteen tests cover business-date boundaries, schema validation, rate-limit behavior, route ordering, honeypot handling, configuration failure, and the Resend envelope. Laser tests remain a separate future expansion. |
+| A06 | Automated test runner | **Complete** | — | Vitest is configured with `test` and `test:watch` scripts. Sixteen tests cover business-date boundaries, schema validation, both supported Redis credential conventions, rate-limit behavior, route ordering, honeypot handling, configuration failure, and the Resend envelope. Laser tests remain a separate future expansion. |
 | A07 | ESLint and CI enforcement | **Partial** | P1 | `npm run lint` exists and passes using Next 16's flat ESLint config. The old recommendation to add `next lint` is invalid for this project. No repository CI workflow was found, so lint/build/test enforcement is still pending. |
 | A08 | Structured server logging | **Pending** | P1 | The booking route still uses `console.error`. Define redaction first, then add event-shaped logs for configuration failure, provider failure, rate limiting, and honeypot activity. |
 | A09 | Lazy-load the Three.js hero | **Complete** | — | `laser-hero-scene-loader.tsx` uses `next/dynamic`, `ssr: false`, capability tiers, an idle/timer gate, and visibility-aware frame control. The original eager-load finding is outdated. |
@@ -49,7 +52,7 @@ The production build, lint, and 15 booking-focused tests pass. The booking endpo
 | A16 | Production error tracking | **Pending** | P2 | No Sentry or equivalent integration was found. Add only after deciding the deployment target, alert ownership, sampling, and data-redaction policy. |
 | A17 | TypeScript strictness | **Complete** | — | `tsconfig.json` has `strict: true`; no explicit `any` types were found in production TypeScript. The production build's type check passes. |
 | A18 | Design-system/component reference | **Complete** | — | `public/designsystem.html` documents color, type, layout, gradients, buttons, chips, the calendar, and motion. It is reachable through the `/designsystem` rewrite. |
-| A19 | Production Resend sender domain | **Partial** | P0 before launch | The testing fallback is removed and all three email variables are required. `.env.example` locks the sender and recipient. Resend domain verification, Vercel configuration, and a real delivery/reply test still require the account owner. |
+| A19 | Production Resend sender domain | **Partial** | P0 before launch | The testing fallback is removed and all three email variables are required. Vercel Preview and Production contain the Redis, salt, and email configuration. Public DNS resolves the Resend DKIM, SPF, and MX records. The Resend dashboard must still report the domain as verified, followed by a real delivery/reply test. |
 
 ## Prioritized roadmap
 
@@ -64,9 +67,10 @@ Target: make the inquiry endpoint safe and business-correct before production pr
   - Exact `YYYY-MM-DD` values are checked against the New York business date on client and server; calendar and boundary tests are in place.
 
 - [ ] **A19 — Verify the production sender identity**
-  - Confirm `djknwldg.com` is verified in Resend and add the provider's exact SPF/DKIM records if needed.
-  - Set the Upstash, salt, and three email variables in Vercel Preview and Production.
-  - Send a real delivery test and check SPF, DKIM, DMARC, reply-to behavior, and spam placement.
+  - [x] Add the provider's exact DKIM, SPF, and MX records; public DNS resolves all three.
+  - [ ] Confirm the Resend dashboard reports `djknwldg.com` as verified.
+  - [x] Set the Redis, salt, and three email variables in Vercel Preview and Production.
+  - [ ] Send a real delivery test and check SPF, DKIM, DMARC, reply-to behavior, and spam placement.
 
 **Phase 0 exit:** repeated abuse is throttled, invalid dates cannot reach email, and a production-domain message is delivered to the real inbox.
 
@@ -184,11 +188,12 @@ npx next build --webpack
 | 2026-08-10 | Locked Vercel, Upstash Redis, 10 attempts per hour, and New York as the booking timezone. | These decisions close the implementation ambiguity in A01 and A02. |
 | 2026-08-10 | Locked the sender and recipient and removed all production email fallbacks. | Misconfiguration now fails safely instead of attempting to use a testing identity. |
 | 2026-08-10 | Accepted both direct Upstash and Vercel Marketplace Redis variable names. | The installed Marketplace resource injects `KV_REST_API_*`; supporting both pairs avoids duplicating secrets. |
+| 2026-08-10 | Verified the rate limit on a Vercel Preview deployment. | Ten valid-schema honeypot requests returned `200`; request 11 returned `429` with the required retry and quota headers without entering the email path. |
 
 ## Next checkpoint
 
-Complete the external half of A19: add a private `RATE_LIMIT_SALT`, wait for
-`djknwldg.com` verification in Resend, redeploy, and complete one real
-delivery/reply test. Vercel and its US-region Upstash database are connected,
-and the three booking email variables are configured. After that, Phase 0 is
-ready to close.
+Complete the external half of A19: wait for `djknwldg.com` to report Verified
+in Resend, deploy the verified Preview build to Production, and complete one
+real delivery/reply test. Vercel, Upstash Redis, the private salt, the three
+booking email variables, and the Preview rate-limit rollout are verified.
+After that, Phase 0 is ready to close.
