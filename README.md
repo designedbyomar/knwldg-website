@@ -32,8 +32,8 @@ requires all three Resend variables.
 
 | Variable | Purpose |
 |---|---|
-| `UPSTASH_REDIS_REST_URL` | REST URL for the shared Upstash Redis database. |
-| `UPSTASH_REDIS_REST_TOKEN` | Secret REST token for that database. |
+| `UPSTASH_REDIS_REST_URL` or `KV_REST_API_URL` | REST URL for the shared Upstash Redis database. The Vercel Marketplace integration currently injects the `KV_` name. |
+| `UPSTASH_REDIS_REST_TOKEN` or `KV_REST_API_TOKEN` | Secret REST token for that database. The Vercel Marketplace integration currently injects the `KV_` name. |
 | `RATE_LIMIT_SALT` | Private random value used to HMAC client addresses before they become Redis identifiers. |
 | `RESEND_API_KEY` | Production Resend API key. |
 | `BOOKING_FROM_EMAIL` | Required sender on the verified domain: `KNWLDG Bookings <bookings@djknwldg.com>`. |
@@ -50,7 +50,9 @@ production infrastructure fails closed.
 ### Vercel launch setup
 
 1. Connect the repository to Vercel and link a US-region Upstash Redis database
-   to Preview and Production.
+   to Preview and Production. The limiter accepts both direct Upstash
+   `UPSTASH_REDIS_REST_*` variables and the Vercel Marketplace
+   `KV_REST_API_*` variables.
 2. Generate a private random `RATE_LIMIT_SALT` and add it to both environments.
 3. Verify `djknwldg.com` in Resend, create a production API key, and set the
    three booking email variables exactly as shown in `.env.example`.

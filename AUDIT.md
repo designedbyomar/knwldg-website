@@ -183,10 +183,12 @@ npx next build --webpack
 | 2026-08-09 | Replaced the obsolete `next lint` recommendation with direct ESLint plus CI. | This project uses Next 16 and already has a passing `eslint` script. |
 | 2026-08-10 | Locked Vercel, Upstash Redis, 10 attempts per hour, and New York as the booking timezone. | These decisions close the implementation ambiguity in A01 and A02. |
 | 2026-08-10 | Locked the sender and recipient and removed all production email fallbacks. | Misconfiguration now fails safely instead of attempting to use a testing identity. |
+| 2026-08-10 | Accepted both direct Upstash and Vercel Marketplace Redis variable names. | The installed Marketplace resource injects `KV_REST_API_*`; supporting both pairs avoids duplicating secrets. |
 
 ## Next checkpoint
 
-Complete the external half of A19: connect Vercel, link a US-region Upstash
-database, add a private `RATE_LIMIT_SALT`, verify `djknwldg.com` in Resend, add
-all six production variables, redeploy, and complete one real delivery/reply
-test. After that, Phase 0 is ready to close.
+Complete the external half of A19: add a private `RATE_LIMIT_SALT`, wait for
+`djknwldg.com` verification in Resend, redeploy, and complete one real
+delivery/reply test. Vercel and its US-region Upstash database are connected,
+and the three booking email variables are configured. After that, Phase 0 is
+ready to close.
