@@ -42,3 +42,6 @@ yarn-error.log*
 next-env.d.ts
 .gstack/
 .playwright-cli/
+
+# Internal status tracker: enumerates unfixed defensive gaps, repo is public
+AUDIT.md

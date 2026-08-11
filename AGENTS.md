@@ -44,12 +44,15 @@ npm run dev      # Turbopack dev server on :3000
 npm run build    # production build (Turbopack). Also passes with `npx next build --webpack`
 npm run start    # serve the production build
 npm run lint     # eslint
+npm run test     # Vitest, once
+npm run test:watch
 npx tsc --noEmit # typecheck
 ```
 
-**There is no test runner.** No `test` script, no test files, no framework
-installed. `npx tsc --noEmit` and `npm run lint` are the only automated gates —
-do not claim "tests pass". `AUDIT.md` tracks a test suite as pending.
+Vitest covers the booking path only — schema validation, business-date
+boundaries, both Redis credential conventions, rate limiting, route ordering,
+honeypot handling and the Resend envelope. **Nothing covers the hero**, so a
+green run says nothing about the laser rig; verify that visually per rule 3.
 
 `@next/bundle-analyzer` is installed but not wired into `next.config.ts`.
 
@@ -124,17 +127,20 @@ anything in `components/three/` or `components/sections/hero*`.
 ## Other docs
 
 - `PRODUCT.md` — users, brand personality, anti-references, design principles.
-- `AUDIT.md` — canonical status tracker. Update it when work lands.
 - `design-qa.md` — visual QA notes and captures.
 - `design_handoff_knwldg_site/` — original design handoff.
+- `docs/hero-rig.md` — the hero's architecture and invariants.
 - `docs/verifying-visuals.md` — how to verify visual work here honestly.
 
-> `PRODUCT.md`, `AUDIT.md` and `design-qa.md` are currently **untracked**. A
-> fresh clone will not have them. Commit them or treat their absence as normal.
+> **`AUDIT.md` is deliberately untracked and gitignored.** It is the canonical
+> status tracker and it should keep being updated locally, but it enumerates
+> unfixed defensive gaps — exact rate-limit thresholds, which failures fail open,
+> what is unmonitored — and this repository is public. Keep it out of git. If it
+> is missing from your checkout, that is expected, not a mistake.
 
 ## Known gaps
 
-`AUDIT.md` is the tracker; two live issues it does not cover:
+Two live issues, both known and unfixed:
 
 - Scroll reveals ship `opacity:0` inline in the server HTML
   (`components/ui/reveal.tsx`), so with JS disabled everything below the hero is
