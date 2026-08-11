@@ -99,3 +99,16 @@ including an accessibility ceiling on the strobe rate.
 
 If you are touching the hero, also read [`docs/hero-rig.md`](./docs/hero-rig.md)
 and [`docs/verifying-visuals.md`](./docs/verifying-visuals.md).
+
+## Licence
+
+The **code** is [MIT](./LICENSE) — use it, modify it, ship it commercially, no
+permission needed.
+
+The **brand is not**. The KNWLDG name, the logo and wordmark, and the
+photographs are © 2026 Omar Tavarez, all rights reserved, and are excluded from
+the MIT grant. You may not use them to represent yourself as KNWLDG or imply
+affiliation or endorsement.
+
+Building your own site from this is welcome — see [`NOTICE.md`](./NOTICE.md) for
+exactly what is reserved and the four things to replace before you deploy.
