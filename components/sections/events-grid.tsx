@@ -1,5 +1,6 @@
 import { EVENT_TYPES } from "@/data/events";
 import { hueRampOklch } from "@/data/theme-tokens";
+import { ICON_SIZE, ICON_STROKE } from "@/data/icon-tokens";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
 import { Container } from "@/components/layout/container";
@@ -26,12 +27,17 @@ export function EventsGrid() {
               delay={i * 0.06}
               className="bg-bg px-4.5 py-5.5 transition-colors duration-300 hover:bg-fg/5"
             >
-              <div
-                className="mb-3.5 font-display text-xs tracking-[0.1em]"
+              {/* Decorative: the title below already names the category, so a
+                  label here would make screen readers announce it twice. The
+                  ramp colour carried by the old 01-05 numeral moves onto the
+                  icon so the Rose -> Ultraviolet progression survives. */}
+              <event.icon
+                size={ICON_SIZE}
+                strokeWidth={ICON_STROKE}
+                aria-hidden
+                className="mb-3.5"
                 style={{ color: hueRampOklch(event.hue) }}
-              >
-                {event.index}
-              </div>
+              />
               <div className="font-body text-sm font-semibold text-fg/92">{event.title}</div>
               <div className="mt-1.5 font-body text-xs leading-[1.45] text-fg/55">
                 {event.description}

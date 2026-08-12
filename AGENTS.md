@@ -21,7 +21,8 @@ metro, western Massachusetts and the wider Northeast. It is one long-form
 landing page; the only conversion is the booking inquiry form at `#booking`.
 
 See `PRODUCT.md` for users, brand personality, anti-references and design
-principles before making design decisions.
+principles before making design decisions. See `DESIGN.md` for the normative
+visual tokens, component rules, and approved design language.
 
 ## Stack
 
@@ -86,6 +87,27 @@ public/brand/   logo, portrait, and the alpha-only portrait mask
 - Env: copy `.env.example` to `.env.local`. `.env*` is gitignored; never commit
   real keys. Vars are `RESEND_API_KEY`, `BOOKING_TO_EMAIL`, `BOOKING_FROM_EMAIL`.
 
+## Design documentation sync
+
+The live implementation, `DESIGN.md`, and `public/designsystem.html` must tell
+the same story. For every design change, explicitly check whether it affects a
+reusable visual decision. If it does, update all applicable surfaces in the
+same task:
+
+1. Update the implementation in `app/`, `components/`, `data/`, or
+   `public/brand/`.
+2. Update `public/designsystem.html`, the human-readable visual catalog.
+3. Update the normative frontmatter and corresponding prose in `DESIGN.md`.
+4. Regenerate `.impeccable/design.json` whenever `DESIGN.md` changes so its
+   extensions, component previews, and narrative remain synchronized.
+
+This applies to changes in color tokens, gradient roles, typography, spacing,
+layout rules, breakpoints, corner geometry, elevation, motion, accessibility
+patterns, component appearance or state, logo treatment, and favicon usage. A
+one-off implementation fix does not require documentation churn when the
+documented system remains exactly true, but the check is still required. Never
+leave a documented example that contradicts the live site.
+
 ## Rules that are load-bearing
 
 These look like arbitrary numbers or style choices. They are not, and each is
@@ -127,6 +149,9 @@ anything in `components/three/` or `components/sections/hero*`.
 ## Other docs
 
 - `PRODUCT.md` — users, brand personality, anti-references, design principles.
+- `DESIGN.md` — normative visual tokens, component rules, and design language.
+- `.impeccable/design.json` — machine-readable design extensions and previews.
+- `public/designsystem.html` — visual catalog served at `/designsystem`.
 - `design-qa.md` — visual QA notes and captures.
 - `design_handoff_knwldg_site/` — original design handoff.
 - `docs/hero-rig.md` — the hero's architecture and invariants.

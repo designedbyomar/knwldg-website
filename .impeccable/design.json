@@ -1,0 +1,342 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-12T20:06:39Z",
+  "title": "Design System: KNWLDG",
+  "extensions": {
+    "colorMeta": {
+      "black": {
+        "role": "neutral",
+        "displayName": "Black Stage",
+        "canonical": "oklch(0 0 0)",
+        "tonalRamp": [
+          "oklch(0.08 0 0)",
+          "oklch(0.18 0 0)",
+          "oklch(0.30 0 0)",
+          "oklch(0.42 0 0)",
+          "oklch(0.56 0 0)",
+          "oklch(0.70 0 0)",
+          "oklch(0.84 0 0)",
+          "oklch(0.95 0 0)"
+        ]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "White Signal",
+        "canonical": "oklch(1 0 0)",
+        "tonalRamp": [
+          "oklch(0.08 0 0)",
+          "oklch(0.18 0 0)",
+          "oklch(0.30 0 0)",
+          "oklch(0.42 0 0)",
+          "oklch(0.56 0 0)",
+          "oklch(0.70 0 0)",
+          "oklch(0.84 0 0)",
+          "oklch(0.95 0 0)"
+        ]
+      },
+      "ultraviolet": {
+        "role": "primary",
+        "displayName": "Ultraviolet",
+        "canonical": "oklch(0.78 0.19 260)",
+        "tonalRamp": [
+          "oklch(0.15 0.05 260)",
+          "oklch(0.26 0.09 260)",
+          "oklch(0.38 0.13 260)",
+          "oklch(0.50 0.17 260)",
+          "oklch(0.62 0.19 260)",
+          "oklch(0.74 0.16 260)",
+          "oklch(0.86 0.10 260)",
+          "oklch(0.95 0.04 260)"
+        ]
+      },
+      "violet": {
+        "role": "primary",
+        "displayName": "Violet",
+        "canonical": "oklch(0.78 0.19 280)",
+        "tonalRamp": [
+          "oklch(0.15 0.05 280)",
+          "oklch(0.26 0.09 280)",
+          "oklch(0.38 0.13 280)",
+          "oklch(0.50 0.17 280)",
+          "oklch(0.62 0.19 280)",
+          "oklch(0.74 0.16 280)",
+          "oklch(0.86 0.10 280)",
+          "oklch(0.95 0.04 280)"
+        ]
+      },
+      "orchid": {
+        "role": "primary",
+        "displayName": "Orchid",
+        "canonical": "oklch(0.78 0.19 300)",
+        "tonalRamp": [
+          "oklch(0.15 0.05 300)",
+          "oklch(0.26 0.09 300)",
+          "oklch(0.38 0.13 300)",
+          "oklch(0.50 0.17 300)",
+          "oklch(0.62 0.19 300)",
+          "oklch(0.74 0.16 300)",
+          "oklch(0.86 0.10 300)",
+          "oklch(0.95 0.04 300)"
+        ]
+      },
+      "magenta": {
+        "role": "secondary",
+        "displayName": "Magenta",
+        "canonical": "oklch(0.78 0.19 320)",
+        "tonalRamp": [
+          "oklch(0.15 0.05 320)",
+          "oklch(0.26 0.09 320)",
+          "oklch(0.38 0.13 320)",
+          "oklch(0.50 0.17 320)",
+          "oklch(0.62 0.19 320)",
+          "oklch(0.74 0.16 320)",
+          "oklch(0.86 0.10 320)",
+          "oklch(0.95 0.04 320)"
+        ]
+      },
+      "rose": {
+        "role": "secondary",
+        "displayName": "Rose",
+        "canonical": "oklch(0.78 0.19 340)",
+        "tonalRamp": [
+          "oklch(0.15 0.05 340)",
+          "oklch(0.26 0.09 340)",
+          "oklch(0.38 0.13 340)",
+          "oklch(0.50 0.17 340)",
+          "oklch(0.62 0.19 340)",
+          "oklch(0.74 0.16 340)",
+          "oklch(0.86 0.10 340)",
+          "oklch(0.95 0.04 340)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Section Display",
+        "purpose": "Uppercase section headlines in Anton."
+      },
+      "headline": {
+        "displayName": "Hero Headline",
+        "purpose": "The compact hero statement in Anton."
+      },
+      "title": {
+        "displayName": "Proof Title",
+        "purpose": "Statistics and short proof points in Anton."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Paragraphs, descriptions, and form values in Sora."
+      },
+      "label": {
+        "displayName": "UI Label",
+        "purpose": "Navigation, buttons, chips, and captions in Sora."
+      }
+    },
+    "shadows": [
+      {
+        "name": "popover-ambient",
+        "value": "0 18px 60px rgb(0 0 0 / 0.65)",
+        "purpose": "Separates the calendar and future floating UI from the black page."
+      }
+    ],
+    "motion": [
+      {
+        "name": "reveal",
+        "value": "opacity 0 to 1, translateY 16px to 0, 600ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Standard one-time viewport reveal with a static reduced-motion branch."
+      },
+      {
+        "name": "press",
+        "value": "scale(0.97)",
+        "purpose": "Tactile button feedback on press."
+      },
+      {
+        "name": "nav-plate",
+        "value": "color 300ms",
+        "purpose": "Introduces the navigation backing plate after 24px of scroll."
+      },
+      {
+        "name": "flash-cap",
+        "value": "maximum 3Hz",
+        "purpose": "Accessibility ceiling for hero strobe behavior."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "content",
+        "value": "900px"
+      }
+    ],
+    "iconMeta": {
+      "library": "Lucide",
+      "license": "ISC",
+      "size": "20px",
+      "strokeWidth": 1.75,
+      "jsTokens": "data/icon-tokens.ts",
+      "decorative": true,
+      "eventMapping": {
+        "Weddings": {
+          "icon": "Gem",
+          "accent": "rose"
+        },
+        "Corporate": {
+          "icon": "Building2",
+          "accent": "magenta"
+        },
+        "Festivals": {
+          "icon": "Tent",
+          "accent": "orchid"
+        },
+        "Private": {
+          "icon": "PartyPopper",
+          "accent": "violet"
+        },
+        "Nightlife": {
+          "icon": "Disc3",
+          "accent": "ultraviolet"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single dominant action in a view, using the approved cool two-stop gradient.",
+      "html": "<button class=\"ds-btn-primary\">CHECK AVAILABILITY</button>",
+      "css": ".ds-btn-primary { background: linear-gradient(105deg, var(--color-ultraviolet) 0%, var(--color-violet) 100%); color: var(--color-ink); padding: 16px 32px; border: 0; border-radius: 0; font-family: var(--font-ui); font-size: 14px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; transition: filter 150ms ease, transform 120ms ease; } .ds-btn-primary:hover { filter: brightness(1.06); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 3px; } .ds-btn-primary:active { transform: scale(0.97); }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "A quiet secondary action with a square hairline frame.",
+      "html": "<button class=\"ds-btn-outline\">TELL ME ABOUT YOUR EVENT</button>",
+      "css": ".ds-btn-outline { background: var(--color-bg); color: var(--color-fg); padding: 12px 24px; border: 1px solid rgb(255 255 255 / 0.30); border-radius: 0; font-family: var(--font-ui); font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; transition: border-color 150ms ease, transform 120ms ease; } .ds-btn-outline:hover { border-color: var(--color-fg); } .ds-btn-outline:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 3px; } .ds-btn-outline:active { transform: scale(0.97); }"
+    },
+    {
+      "name": "Resting Chip",
+      "kind": "chip",
+      "refersTo": "chip-resting",
+      "description": "A fully rounded Violet category or choice chip in its unselected state.",
+      "html": "<button class=\"ds-chip-resting\">AFROBEATS</button>",
+      "css": ".ds-chip-resting { background: oklch(0.78 0.19 280 / 0.12); color: var(--color-violet); padding: 8px 16px; border: 1px solid oklch(0.78 0.19 280 / 0.45); border-radius: 9999px; font-family: var(--font-ui); font-size: 12px; letter-spacing: normal; transition: background-color 150ms ease, color 150ms ease; } .ds-chip-resting:hover { background: oklch(0.78 0.19 280 / 0.20); } .ds-chip-resting:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 2px; }"
+    },
+    {
+      "name": "Selected Chip",
+      "kind": "chip",
+      "refersTo": "chip-selected",
+      "description": "The selected state, always solid Violet rather than a gradient.",
+      "html": "<button class=\"ds-chip-selected\" aria-pressed=\"true\">HOUSE</button>",
+      "css": ".ds-chip-selected { background: var(--color-violet); color: var(--color-ink); padding: 8px 16px; border: 1px solid var(--color-violet); border-radius: 9999px; font-family: var(--font-ui); font-size: 12px; font-weight: 600; letter-spacing: normal; } .ds-chip-selected:hover { filter: brightness(1.04); } .ds-chip-selected:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 2px; }"
+    },
+    {
+      "name": "Underline Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "The transparent booking field with a Magenta focus underline.",
+      "html": "<label class=\"ds-field\"><span>EMAIL</span><input type=\"email\" placeholder=\"you@example.com\"></label>",
+      "css": ".ds-field { display: grid; gap: 10px; color: rgb(255 255 255 / 0.50); font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; } .ds-field input { width: 100%; background: transparent; color: var(--color-fg); padding: 0 0 10px; border: 0; border-bottom: 2px solid rgb(255 255 255 / 0.15); border-radius: 0; outline: 0; font-family: var(--font-body); font-size: 14px; transition: border-color 150ms ease; } .ds-field input:hover { border-bottom-color: rgb(255 255 255 / 0.30); } .ds-field input:focus-visible { border-bottom-color: var(--color-magenta); }"
+    },
+    {
+      "name": "Calendar Day",
+      "kind": "custom",
+      "refersTo": "chip-selected",
+      "description": "A 44px calendar cell showing default, hover, focus, and selected behavior.",
+      "html": "<button class=\"ds-calendar-day\" aria-pressed=\"true\">20</button>",
+      "css": ".ds-calendar-day { width: 44px; height: 44px; display: grid; place-items: center; background: var(--color-violet); color: var(--color-ink); border: 0; border-radius: 0; font-family: var(--font-ui); font-size: 12px; font-weight: 600; transition: background-color 150ms ease, color 150ms ease; } .ds-calendar-day:hover { background: var(--color-violet); color: var(--color-ink); } .ds-calendar-day:focus-visible { outline: 2px solid oklch(0.78 0.19 320 / 0.70); outline-offset: 2px; }"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "refersTo": "button-primary",
+      "description": "Fixed square-edged navigation with a simplified mark and one dominant booking action.",
+      "html": "<nav class=\"ds-nav\"><span class=\"ds-nav-mark\">KNWLDG</span><a href=\"#events\">EVENTS</a><a href=\"#genres\">MUSIC</a><a class=\"ds-nav-book\" href=\"#booking\">BOOK</a></nav>",
+      "css": ".ds-nav { display: flex; align-items: center; gap: 32px; padding: 16px 24px; background: rgb(0 0 0 / 0.85); border-bottom: 1px solid rgb(255 255 255 / 0.10); color: rgb(255 255 255 / 0.85); font-family: var(--font-ui); font-size: 12px; letter-spacing: 0.12em; } .ds-nav-mark { margin-right: auto; color: var(--color-magenta); font-family: var(--font-display); font-size: 20px; letter-spacing: 0; } .ds-nav a { color: inherit; text-decoration: none; transition: color 150ms ease; } .ds-nav a:hover { color: var(--color-fg); } .ds-nav a:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 3px; } .ds-nav-book { background: linear-gradient(105deg, var(--color-ultraviolet), var(--color-violet), var(--color-orchid)); color: var(--color-ink) !important; padding: 8px 18px; font-weight: 600; }"
+    },
+    {
+      "name": "Open-Format Field",
+      "kind": "custom",
+      "refersTo": "button-primary",
+      "description": "The square signature panel that carries the complete five-stop palette.",
+      "html": "<section class=\"ds-open-format\"><h2>OPEN FORMAT. BUILT AROUND YOUR CROWD.</h2><div><span>AFROBEATS</span><span>HOUSE</span><span>HIP-HOP</span></div></section>",
+      "css": ".ds-open-format { display: grid; grid-template-columns: minmax(180px, 280px) 1fr; align-items: center; gap: 48px; padding: 56px; background: linear-gradient(145deg, var(--color-ultraviolet) 0%, var(--color-violet) 24%, var(--color-orchid) 50%, var(--color-magenta) 76%, var(--color-rose) 100%); color: var(--color-ink); border-radius: 0; } .ds-open-format h2 { margin: 0; font-family: var(--font-display); font-size: 32px; line-height: 1; font-weight: 400; } .ds-open-format div { display: flex; flex-wrap: wrap; gap: 10px; } .ds-open-format span { padding: 10px 18px; border: 1px solid rgb(0 0 0 / 0.30); border-radius: 9999px; color: rgb(0 0 0 / 0.85); font-family: var(--font-ui); font-size: 12px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Laser-Cut Dance Floor",
+    "overview": "KNWLDG is a black performance space cut by controlled light. The visual system is electric, disciplined, and crowd-aware: strong type establishes the beat, square geometry creates structure, and the five-color ramp supplies movement without becoming generic nightlife decoration.\n\nThe system balances club energy with the clarity required by wedding, corporate, festival, and private-event clients. It rejects soft wedding-template styling, undirected neon, and corporate card stacks. Every section should communicate one idea with a strict grid, deliberate spacing, and enough black space for the accents to feel like light.",
+    "keyCharacteristics": [
+      "Black stage, white information, five spectral accents.",
+      "Square-edged surfaces and disciplined grid seams.",
+      "Anton display type paired with Sora body and UI type.",
+      "Full-palette energy used in named, repeatable roles.",
+      "Flat content hierarchy with one functional floating shadow.",
+      "Choreographed hero motion and restrained motion everywhere else."
+    ],
+    "rules": [
+      {
+        "name": "The Full Ramp Has a Job Rule",
+        "body": "The five-stop sequence is Ultraviolet, Violet, Orchid, Magenta, Rose. Use it for the square open-format field, the favicon, and explicitly documented full-ramp treatments only.",
+        "section": "colors"
+      },
+      {
+        "name": "The Role-Based Gradient Rule",
+        "body": "Primary buttons use Ultraviolet, Violet. Brand marks use Violet, Magenta. The unassigned variation is Magenta, Rose. Never improvise a new sequence when an approved role already exists.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ink on Light Rule",
+        "body": "Text on solid accents and gradients is always Black. White text on a bright ramp is forbidden.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two-Neutral Rule",
+        "body": "Black and White are the complete neutral palette. Create hierarchy with opacity, not extra gray or tinted-neutral tokens.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two-Face Rule",
+        "body": "Anton displays. Sora reads and operates. A third typeface is forbidden without a system-level reason.",
+        "section": "typography"
+      },
+      {
+        "name": "The Short-Caps Rule",
+        "body": "Uppercase and tracking belong to headlines and short UI labels. Paragraphs remain sentence case.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Until Floating Rule",
+        "body": "A surface receives a shadow only when it genuinely floats over another interaction layer. If a content card has a shadow, the hierarchy is wrong.",
+        "section": "elevation"
+      },
+      {
+        "name": "The One Icon Library Rule",
+        "body": "Icons come from Lucide at 20px / 1.75 stroke. A second icon library is forbidden - mixing sets puts two optical grids and two stroke weights on one page. Icons are decorative; adjacent text carries the meaning, so every icon is aria-hidden."
+      }
+    ],
+    "dos": [
+      "**Do** use Black, White, and the five named accent colors only.",
+      "**Do** preserve the approved gradient roles and stop order.",
+      "**Do** use square geometry for panels, buttons, fields, cards, and floating surfaces; chips alone use fully rounded pill geometry.",
+      "**Do** keep each section focused on one decision or proof point.",
+      "**Do** keep the `1440px` content cap and use the `900px` content breakpoint before inventing another.",
+      "**Do** use 1px shared seams for repeated content grids.",
+      "**Do** maintain 4.5:1 text contrast, visible focus states, 44px touch targets, and reduced-motion behavior.",
+      "**Do** verify the animated hero in a GPU-backed browser across multiple frames."
+    ],
+    "donts": [
+      "**Don't** use soft, rounded wedding-template styling beyond the intentional pill shape of chips.",
+      "**Don't** use generic nightlife neon.",
+      "**Don't** use corporate SaaS card layouts.",
+      "**Don't** dilute the established square-edged, dark, magenta-to-violet identity.",
+      "**Don't** introduce gray, cream, tinted-neutral, or unrelated accent colors.",
+      "**Don't** use gradients for text or selected chips.",
+      "**Don't** add decorative card shadows, glassmorphism, or rounded containers.",
+      "**Don't** reuse the hero's beat-synced or WebGL effects elsewhere on the page.",
+      "**Don't** animate width, height, top, left, or any property that triggers layout.",
+      "**Don't** raise the laser flash rate above 3Hz."
+    ]
+  }
+}
