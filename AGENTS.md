@@ -87,6 +87,24 @@ public/brand/   logo, portrait, and the alpha-only portrait mask
 - Env: copy `.env.example` to `.env.local`. `.env*` is gitignored; never commit
   real keys. Vars are `RESEND_API_KEY`, `BOOKING_TO_EMAIL`, `BOOKING_FROM_EMAIL`.
 
+## Git workflow
+
+**Never commit or push directly to `main`.** Every change — including one-line
+fixes and docs-only edits — goes through a branch and a pull request:
+
+```bash
+git checkout main && git pull
+git checkout -b <type>/<short-description>
+# work, commit
+git push -u origin <branch>
+gh pr create
+```
+
+Report the PR URL, not a pushed SHA. Do not merge the PR yourself unless asked;
+opening it is where the work ends. If you have already committed to a local
+`main` by mistake, move those commits onto a branch and reset `main` back to
+`origin/main` rather than pushing them.
+
 ## Design documentation sync
 
 The live implementation, `DESIGN.md`, and `public/designsystem.html` must tell
