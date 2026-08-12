@@ -6,7 +6,7 @@ import { Container } from "@/components/layout/container";
 export function GenrePanel() {
   return (
     <section id="genres" className="bg-bg px-4 py-8 content:px-12 content:py-12">
-      <div className="brand-gradient-diagonal mx-auto max-w-page overflow-hidden rounded-[24px]">
+      <div className="brand-gradient-diagonal mx-auto max-w-page overflow-hidden">
         <Container className="px-5 py-20 content:px-14 content:py-28">
           <Reveal className="grid grid-cols-1 items-center gap-8 content:grid-cols-[280px_1fr] content:gap-12">
             <h2 className="font-display text-[32px] uppercase text-ink">

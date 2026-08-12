@@ -5,7 +5,7 @@ import { Container } from "@/components/layout/container";
 
 export function StatsStrip() {
   return (
-    <div className="border-b border-fg/10">
+    <div className="border-y border-fg/10">
       <Container className="grid grid-cols-2 content:grid-cols-4 text-center">
         {STATS.map((stat, i) => (
           <Reveal

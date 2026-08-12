@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes, HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
-const BASE = "font-ui text-xs tracking-normal inline-block transition-colors";
+const BASE = "inline-block rounded-full font-ui text-xs tracking-normal transition-colors";
 
 const VARIANTS = {
   violet: "border border-violet/45 bg-violet/12 text-violet px-4 py-2",
