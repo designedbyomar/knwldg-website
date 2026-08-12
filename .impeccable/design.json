@@ -205,7 +205,7 @@
       "refersTo": "button-primary",
       "description": "The single dominant action in a view, using the approved cool two-stop gradient.",
       "html": "<button class=\"ds-btn-primary\">CHECK AVAILABILITY</button>",
-      "css": ".ds-btn-primary { background: linear-gradient(105deg, var(--color-ultraviolet) 0%, var(--color-violet) 100%); color: var(--color-ink); padding: 16px 32px; border: 0; border-radius: 0; font-family: var(--font-ui); font-size: 14px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; transition: filter 150ms ease, transform 120ms ease; } .ds-btn-primary:hover { filter: brightness(1.06); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 3px; } .ds-btn-primary:active { transform: scale(0.97); }"
+      "css": ".ds-btn-primary { background: linear-gradient(105deg, var(--color-ultraviolet) 0%, var(--color-violet) 100%); color: var(--color-ink); padding: 16px 32px; border: 0; border-radius: 0; font-family: var(--font-ui); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; transition: filter 150ms ease, transform 120ms ease; } .ds-btn-primary:hover { filter: brightness(1.06); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 3px; } .ds-btn-primary:active { transform: scale(0.97); }"
     },
     {
       "name": "Outline Button",
@@ -213,7 +213,7 @@
       "refersTo": "button-outline",
       "description": "A quiet secondary action with a square hairline frame.",
       "html": "<button class=\"ds-btn-outline\">TELL ME ABOUT YOUR EVENT</button>",
-      "css": ".ds-btn-outline { background: var(--color-bg); color: var(--color-fg); padding: 12px 24px; border: 1px solid rgb(255 255 255 / 0.30); border-radius: 0; font-family: var(--font-ui); font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; transition: border-color 150ms ease, transform 120ms ease; } .ds-btn-outline:hover { border-color: var(--color-fg); } .ds-btn-outline:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 3px; } .ds-btn-outline:active { transform: scale(0.97); }"
+      "css": ".ds-btn-outline { background: var(--color-bg); color: var(--color-fg); padding: 12px 24px; border: 1px solid rgb(255 255 255 / 0.30); border-radius: 0; font-family: var(--font-ui); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; transition: border-color 150ms ease, transform 120ms ease; } .ds-btn-outline:hover { border-color: var(--color-fg); } .ds-btn-outline:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 3px; } .ds-btn-outline:active { transform: scale(0.97); }"
     },
     {
       "name": "Resting Chip",
@@ -221,7 +221,7 @@
       "refersTo": "chip-resting",
       "description": "A fully rounded Violet category or choice chip in its unselected state.",
       "html": "<button class=\"ds-chip-resting\">AFROBEATS</button>",
-      "css": ".ds-chip-resting { background: oklch(0.78 0.19 280 / 0.12); color: var(--color-violet); padding: 8px 16px; border: 1px solid oklch(0.78 0.19 280 / 0.45); border-radius: 9999px; font-family: var(--font-ui); font-size: 12px; letter-spacing: normal; transition: background-color 150ms ease, color 150ms ease; } .ds-chip-resting:hover { background: oklch(0.78 0.19 280 / 0.20); } .ds-chip-resting:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 2px; }"
+      "css": ".ds-chip-resting { background: oklch(0.78 0.19 280 / 0.12); color: var(--color-violet); padding: 8px 16px; border: 1px solid oklch(0.78 0.19 280 / 0.45); border-radius: 9999px; font-family: var(--font-ui); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; transition: background-color 150ms ease, color 150ms ease; } .ds-chip-resting:hover { background: oklch(0.78 0.19 280 / 0.20); } .ds-chip-resting:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 2px; }"
     },
     {
       "name": "Selected Chip",
@@ -229,7 +229,7 @@
       "refersTo": "chip-selected",
       "description": "The selected state, always solid Violet rather than a gradient.",
       "html": "<button class=\"ds-chip-selected\" aria-pressed=\"true\">HOUSE</button>",
-      "css": ".ds-chip-selected { background: var(--color-violet); color: var(--color-ink); padding: 8px 16px; border: 1px solid var(--color-violet); border-radius: 9999px; font-family: var(--font-ui); font-size: 12px; font-weight: 600; letter-spacing: normal; } .ds-chip-selected:hover { filter: brightness(1.04); } .ds-chip-selected:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 2px; }"
+      "css": ".ds-chip-selected { background: var(--color-violet); color: var(--color-ink); padding: 8px 16px; border: 1px solid var(--color-violet); border-radius: 9999px; font-family: var(--font-ui); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; } .ds-chip-selected:hover { filter: brightness(1.04); } .ds-chip-selected:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 2px; }"
     },
     {
       "name": "Underline Input",
@@ -237,7 +237,7 @@
       "refersTo": "input",
       "description": "The transparent booking field with a Magenta focus underline.",
       "html": "<label class=\"ds-field\"><span>EMAIL</span><input type=\"email\" placeholder=\"you@example.com\"></label>",
-      "css": ".ds-field { display: grid; gap: 10px; color: rgb(255 255 255 / 0.50); font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; } .ds-field input { width: 100%; background: transparent; color: var(--color-fg); padding: 0 0 10px; border: 0; border-bottom: 2px solid rgb(255 255 255 / 0.15); border-radius: 0; outline: 0; font-family: var(--font-body); font-size: 14px; transition: border-color 150ms ease; } .ds-field input:hover { border-bottom-color: rgb(255 255 255 / 0.30); } .ds-field input:focus-visible { border-bottom-color: var(--color-magenta); }"
+      "css": ".ds-field { display: grid; gap: 10px; color: rgb(255 255 255 / 0.50); font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; } .ds-field input { width: 100%; background: transparent; color: var(--color-fg); padding: 0 0 10px; border: 0; border-bottom: 2px solid rgb(255 255 255 / 0.15); border-radius: 0; outline: 0; font-family: var(--font-body); font-size: 15px; font-weight: 400; letter-spacing: normal; transition: border-color 150ms ease; } .ds-field input:hover { border-bottom-color: rgb(255 255 255 / 0.30); } .ds-field input:focus-visible { border-bottom-color: var(--color-magenta); }"
     },
     {
       "name": "Calendar Day",
@@ -253,7 +253,7 @@
       "refersTo": "button-primary",
       "description": "Fixed square-edged navigation with a simplified mark and one dominant booking action.",
       "html": "<nav class=\"ds-nav\"><span class=\"ds-nav-mark\">KNWLDG</span><a href=\"#events\">EVENTS</a><a href=\"#genres\">MUSIC</a><a class=\"ds-nav-book\" href=\"#booking\">BOOK</a></nav>",
-      "css": ".ds-nav { display: flex; align-items: center; gap: 32px; padding: 16px 24px; background: rgb(0 0 0 / 0.85); border-bottom: 1px solid rgb(255 255 255 / 0.10); color: rgb(255 255 255 / 0.85); font-family: var(--font-ui); font-size: 12px; letter-spacing: 0.12em; } .ds-nav-mark { margin-right: auto; color: var(--color-magenta); font-family: var(--font-display); font-size: 20px; letter-spacing: 0; } .ds-nav a { color: inherit; text-decoration: none; transition: color 150ms ease; } .ds-nav a:hover { color: var(--color-fg); } .ds-nav a:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 3px; } .ds-nav-book { background: linear-gradient(105deg, var(--color-ultraviolet), var(--color-violet), var(--color-orchid)); color: var(--color-ink) !important; padding: 8px 18px; font-weight: 600; }"
+      "css": ".ds-nav { display: flex; align-items: center; gap: 32px; padding: 16px 24px; background: rgb(0 0 0 / 0.85); border-bottom: 1px solid rgb(255 255 255 / 0.10); color: rgb(255 255 255 / 0.85); font-family: var(--font-ui); font-size: 12px; letter-spacing: 0.12em; } .ds-nav-mark { margin-right: auto; color: var(--color-magenta); font-family: var(--font-display); font-size: 20px; letter-spacing: 0; } .ds-nav a { color: inherit; text-decoration: none; transition: color 150ms ease; } .ds-nav a:hover { color: var(--color-fg); } .ds-nav a:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 3px; } .ds-nav-book { background: linear-gradient(105deg, var(--color-ultraviolet) 0%, var(--color-violet) 100%); color: var(--color-ink) !important; padding: 8px 18px; font-weight: 600; }"
     },
     {
       "name": "Open-Format Field",
