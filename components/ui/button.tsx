@@ -8,7 +8,7 @@ const BASE =
   "inline-block font-ui text-sm font-semibold tracking-[0.06em] uppercase transition-colors";
 
 const VARIANTS = {
-  gradient: "brand-gradient-ultraviolet-orchid text-ink px-8 py-4 hover:brightness-[1.06]",
+  gradient: "brand-gradient-ultraviolet-violet text-ink px-8 py-4 hover:brightness-[1.06]",
   outline:
     "border border-fg/30 text-fg px-6 py-3 hover:border-fg hover:text-fg",
 } as const;

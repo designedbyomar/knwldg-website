@@ -138,20 +138,18 @@
     );
   }
 
-  .brand-gradient-ultraviolet-orchid {
+  .brand-gradient-ultraviolet-violet {
     background-image: linear-gradient(
       105deg,
       var(--color-ultraviolet) 0%,
-      var(--color-violet) 50%,
-      var(--color-orchid) 100%
+      var(--color-violet) 100%
     );
   }
 
-  .brand-gradient-orchid-rose {
+  .brand-gradient-magenta-rose {
     background-image: linear-gradient(
       105deg,
-      var(--color-orchid) 0%,
-      var(--color-magenta) 50%,
+      var(--color-magenta) 0%,
       var(--color-rose) 100%
     );
   }
