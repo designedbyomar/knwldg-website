@@ -58,9 +58,11 @@ export function Footer() {
 
         <div className="flex justify-center gap-5 sm:justify-end">
           <a
-            href="https://instagram.com"
+            href="https://www.instagram.com/djknwldg/"
             aria-label="KNWLDG on Instagram"
             className={SOCIAL_LINK}
+            target="_blank"
+            rel="noreferrer"
           >
             <InstagramMark />
           </a>

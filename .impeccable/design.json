@@ -200,6 +200,36 @@
         "instagram": "inlined in components/layout/footer.tsx",
         "reason": "Lucide ships no brand icons; currentColor requires inline SVG"
       }
+    },
+    "mediaMeta": {
+      "overlapPx": 28,
+      "aspect": "3/4",
+      "restFilter": "grayscale(1) contrast(1.08)",
+      "activeFilter": "grayscale(0) contrast(1)",
+      "tintOverlay": {
+        "gradient": "brand-gradient-diagonal",
+        "blendMode": "color",
+        "restOpacity": 0.85,
+        "activeOpacity": 0,
+        "note": "color takes hue/saturation from the overlay and luminance from the frame, so the desaturated image is recoloured along the ramp rather than washed over. Requires full desaturation first."
+      },
+      "tileShadow": "-14px 0 24px -8px rgb(0 0 0 / 0.9)",
+      "video": {
+        "muted": true,
+        "loop": true,
+        "playsInline": true,
+        "preload": "none",
+        "posterRequired": true,
+        "maxDurationSeconds": 10,
+        "maxHeight": 720
+      },
+      "playback": {
+        "finePointer": "hover and focus",
+        "coarsePointer": "most-visible, one at a time",
+        "reducedMotion": "poster only, never autoplay"
+      },
+      "pipeline": "node scripts/build-media.mjs (masters gitignored)",
+      "captions": "none; each tile is a button with an aria-label"
     }
   },
   "components": [
@@ -334,6 +364,10 @@
       {
         "name": "The Brand Mark Exception",
         "body": "Lucide ships no brand icons, so third-party marks (Instagram) come from that brand's own guidelines rather than being redrawn in Lucide's style. Draw them at the same 20px / 1.75 stroke, and inline them: currentColor only inherits when the SVG is part of the document."
+      },
+      {
+        "name": "The One Overlap Rule",
+        "body": "The capabilities media strip is the only place surfaces overlap; everywhere else keeps strict 1px seams and flat planes. The overlap makes a mixed set of archival photos and modern clips read as one collection, and it earns the only shadow permitted outside the calendar popover, because without a cast edge the overlap is invisible. Do not carry overlap into cards, grids, or sections."
       }
     ],
     "dos": [
