@@ -36,6 +36,23 @@ function useCoarsePointer() {
   return coarse;
 }
 
+export function selectMostVisibleVideo(
+  ratios: Readonly<Record<number, number>>
+): number | null {
+  const best = GALLERY.reduce<{ index: number; ratio: number } | null>(
+    (result, item, index) => {
+      if (item.kind !== "video") return result;
+      const ratio = ratios[index] ?? 0;
+      if (ratio <= 0.6) return result;
+      if (!result || ratio > result.ratio) return { index, ratio };
+      return result;
+    },
+    null
+  );
+
+  return best?.index ?? null;
+}
+
 export function MediaStrip() {
   const reducedMotion = useReducedMotion();
   const coarse = useCoarsePointer();
@@ -93,22 +110,16 @@ export function MediaStrip() {
           lastIntersectionRatio.current[index] = entry.isIntersecting ? entry.intersectionRatio : 0;
         }
 
-        const best = GALLERY.reduce<{ index: number; ratio: number } | null>((result, item, index) => {
-          if (item.kind !== "video") return result;
-          const ratio = lastIntersectionRatio.current[index] ?? 0;
-          if (ratio <= 0.6) return result;
-          if (!result || ratio > result.ratio) return { index, ratio };
-          return result;
-        }, null);
+        const best = selectMostVisibleVideo(lastIntersectionRatio.current);
 
-        if (!best) {
+        if (best === null) {
           setActive(null);
           setPlaying(null);
           return;
         }
 
-        setActive(best.index);
-        setPlaying(best.index);
+        setActive(best);
+        setPlaying(best);
       },
       { threshold: [0, 0.6, 0.9] }
     );

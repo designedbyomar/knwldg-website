@@ -25,8 +25,17 @@
  *                    encoded to 1280x960 instead of 1280x720.
  */
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readdirSync, statSync, rmSync } from "node:fs";
-import { join } from "node:path";
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  renameSync,
+  rmSync,
+  statSync,
+} from "node:fs";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import ffmpeg from "ffmpeg-static";
 
 const SRC = "public/Pics and vids";
@@ -55,54 +64,104 @@ const IMAGES = [
 const run = (args) => execFileSync(ffmpeg, ["-hide_banner", "-loglevel", "error", "-y", ...args]);
 const mb = (p) => (statSync(p).size / 1048576).toFixed(2);
 
-rmSync(OUT, { recursive: true, force: true });
-mkdirSync(OUT, { recursive: true });
-
-let before = 0;
-let after = 0;
-
-for (const v of VIDEOS) {
-  const src = join(SRC, v.in);
-  const mp4 = join(OUT, `${v.out}.mp4`);
-  const poster = join(OUT, `${v.out}.jpg`);
-  before += statSync(src).size;
-
-  // -ss before -i seeks fast; the filter chain caps the long edge at 1280 and
-  // forces even dimensions, which H.264 requires.
-  run([
-    "-ss", String(v.start), "-i", src, "-t", String(v.duration),
-    "-an",
-    "-vf", SCALE,
-    "-c:v", "libx264", "-profile:v", "high", "-preset", "slow", "-crf", "27",
-    "-pix_fmt", "yuv420p", "-movflags", "+faststart",
-    mp4,
-  ]);
-  run([
-    "-ss", String(v.start + v.posterAt), "-i", src, "-vframes", "1",
-    "-vf", SCALE, "-q:v", "6",
-    poster,
-  ]);
-
-  after += statSync(mp4).size + statSync(poster).size;
-  console.log(`  ${v.in.padEnd(14)} ${mb(src).padStart(6)} MB -> ${mb(mp4)} MB + ${mb(poster)} MB poster`);
+export function validateSources(srcDir) {
+  for (const item of [...VIDEOS, ...IMAGES]) {
+    const source = join(srcDir, item.in);
+    if (!statSync(source).isFile()) {
+      throw new Error(`Media source is not a file: ${source}`);
+    }
+  }
 }
 
-for (const img of IMAGES) {
-  const src = join(SRC, img.in);
-  const dst = join(OUT, img.out);
-  before += statSync(src).size;
-  // Long edge to 1600: next/image resizes per request, but a smaller source
-  // keeps the repo small and the optimiser fast.
-  run([
-    "-i", src,
-    "-vf", "scale='if(gt(iw,ih),min(1600,iw),-2)':'if(gt(iw,ih),-2,min(1600,ih))'",
-    "-q:v", "4",
-    dst,
-  ]);
-  after += statSync(dst).size;
-  console.log(`  ${img.in.slice(0, 14).padEnd(14)} ${mb(src).padStart(6)} MB -> ${mb(dst)} MB`);
+export function replaceOutput(stagingDir, outDir) {
+  const backupDir = `${outDir}.previous-${process.pid}-${Date.now()}`;
+  const hadOutput = existsSync(outDir);
+
+  if (hadOutput) renameSync(outDir, backupDir);
+
+  try {
+    renameSync(stagingDir, outDir);
+  } catch (error) {
+    if (hadOutput) renameSync(backupDir, outDir);
+    throw error;
+  }
+
+  if (hadOutput) rmSync(backupDir, { recursive: true, force: true });
 }
 
-const total = readdirSync(OUT).reduce((n, f) => n + statSync(join(OUT, f)).size, 0);
-console.log(`\n  sources ${(before / 1048576).toFixed(1)} MB -> output ${(after / 1048576).toFixed(2)} MB`);
-console.log(`  ${OUT}: ${readdirSync(OUT).length} files, ${(total / 1048576).toFixed(2)} MB`);
+export function buildMedia({
+  srcDir = SRC,
+  outDir = OUT,
+  execute = run,
+  log = console.log,
+} = {}) {
+  // Do not touch committed outputs until every gitignored master is present.
+  validateSources(srcDir);
+
+  mkdirSync(dirname(outDir), { recursive: true });
+  const stagingDir = mkdtempSync(join(dirname(outDir), ".media-build-"));
+  let before = 0;
+  let after = 0;
+
+  try {
+    for (const v of VIDEOS) {
+      const src = join(srcDir, v.in);
+      const mp4 = join(stagingDir, `${v.out}.mp4`);
+      const poster = join(stagingDir, `${v.out}.jpg`);
+      before += statSync(src).size;
+
+      // -ss before -i seeks fast; the filter chain caps the long edge at 1280 and
+      // forces even dimensions, which H.264 requires.
+      execute([
+        "-ss", String(v.start), "-i", src, "-t", String(v.duration),
+        "-an",
+        "-vf", SCALE,
+        "-c:v", "libx264", "-profile:v", "high", "-preset", "slow", "-crf", "27",
+        "-pix_fmt", "yuv420p", "-movflags", "+faststart",
+        mp4,
+      ]);
+      execute([
+        "-ss", String(v.start + v.posterAt), "-i", src, "-vframes", "1",
+        "-vf", SCALE, "-q:v", "6",
+        poster,
+      ]);
+
+      after += statSync(mp4).size + statSync(poster).size;
+      log(`  ${v.in.padEnd(14)} ${mb(src).padStart(6)} MB -> ${mb(mp4)} MB + ${mb(poster)} MB poster`);
+    }
+
+    for (const img of IMAGES) {
+      const src = join(srcDir, img.in);
+      const dst = join(stagingDir, img.out);
+      before += statSync(src).size;
+      // Long edge to 1600: next/image resizes per request, but a smaller source
+      // keeps the repo small and the optimiser fast.
+      execute([
+        "-i", src,
+        "-vf", "scale='if(gt(iw,ih),min(1600,iw),-2)':'if(gt(iw,ih),-2,min(1600,ih))'",
+        "-q:v", "4",
+        dst,
+      ]);
+      after += statSync(dst).size;
+      log(`  ${img.in.slice(0, 14).padEnd(14)} ${mb(src).padStart(6)} MB -> ${mb(dst)} MB`);
+    }
+
+    const files = readdirSync(stagingDir);
+    const total = files.reduce((n, file) => n + statSync(join(stagingDir, file)).size, 0);
+
+    // The short rename window is the only point where known-good output moves.
+    // If promotion fails, replaceOutput restores it before rethrowing.
+    replaceOutput(stagingDir, outDir);
+
+    log(`\n  sources ${(before / 1048576).toFixed(1)} MB -> output ${(after / 1048576).toFixed(2)} MB`);
+    log(`  ${outDir}: ${files.length} files, ${(total / 1048576).toFixed(2)} MB`);
+  } finally {
+    // After a successful rename the staging path no longer exists; after any
+    // failed transcode this removes only partial temporary files.
+    rmSync(stagingDir, { recursive: true, force: true });
+  }
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  buildMedia();
+}
