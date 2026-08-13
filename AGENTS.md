@@ -85,7 +85,9 @@ public/brand/   logo, portrait, and the alpha-only portrait mask
 - Colours: CSS consumers use the `@theme` tokens; JS and shader consumers use
   `data/theme-tokens.ts`.
 - Env: copy `.env.example` to `.env.local`. `.env*` is gitignored; never commit
-  real keys. Vars are `RESEND_API_KEY`, `BOOKING_TO_EMAIL`, `BOOKING_FROM_EMAIL`.
+  real keys. Booking delivery uses `RESEND_API_KEY`, `BOOKING_TO_EMAIL`, and
+  `BOOKING_FROM_EMAIL`; location suggestions use the public, referrer-restricted
+  `NEXT_PUBLIC_GEOAPIFY_API_KEY`.
 
 ## Git workflow
 

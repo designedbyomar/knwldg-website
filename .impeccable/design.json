@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-12T20:06:39Z",
+  "generatedAt": "2026-08-12T20:35:00Z",
   "title": "Design System: KNWLDG",
   "extensions": {
     "colorMeta": {
@@ -230,6 +230,14 @@
       "description": "The selected state, always solid Violet rather than a gradient.",
       "html": "<button class=\"ds-chip-selected\" aria-pressed=\"true\">HOUSE</button>",
       "css": ".ds-chip-selected { background: var(--color-violet); color: var(--color-ink); padding: 8px 16px; border: 1px solid var(--color-violet); border-radius: 9999px; font-family: var(--font-ui); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; } .ds-chip-selected:hover { filter: brightness(1.04); } .ds-chip-selected:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 2px; }"
+    },
+    {
+      "name": "Location Autocomplete",
+      "kind": "input",
+      "refersTo": "location-autocomplete",
+      "description": "An assisted venue, city, and address field with a square Black suggestion list, Violet active option, Geoapify attribution, and manual-entry fallback.",
+      "html": "<label class=\"ds-location\"><span>VENUE / CITY / ADDRESS</span><input value=\"The Society Room\"><div role=\"listbox\"><button role=\"option\" aria-selected=\"true\">THE SOCIETY ROOM OF HARTFORD<small>31 Pratt Street, Hartford, CT 06103</small></button><a href=\"https://www.geoapify.com/\">Powered by Geoapify</a></div></label>",
+      "css": ".ds-location { position: relative; display: grid; gap: 10px; color: rgb(255 255 255 / 0.50); font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.06em; } .ds-location input { background: transparent; color: var(--color-fg); padding: 0 0 10px; border: 0; border-bottom: 2px solid var(--color-magenta); border-radius: 0; font-family: var(--font-body); } .ds-location [role=listbox] { position: absolute; inset: 100% 0 auto; background: var(--color-bg); border: 1px solid rgb(255 255 255 / 0.15); border-radius: 0; box-shadow: 0 18px 60px rgb(0 0 0 / 0.65); } .ds-location [role=option] { width: 100%; padding: 12px 16px; background: var(--color-violet); color: var(--color-ink); border: 0; text-align: left; font-family: var(--font-ui); } .ds-location small { display: block; margin-top: 4px; opacity: 0.65; }"
     },
     {
       "name": "Underline Input",

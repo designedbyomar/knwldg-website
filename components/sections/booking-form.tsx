@@ -8,6 +8,7 @@ import { EVENT_TYPE_OPTIONS, BUDGET_OPTIONS } from "@/data/budget-options";
 import { Chip } from "@/components/ui/chip";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/ui/date-picker";
+import { LocationAutocomplete } from "@/components/ui/location-autocomplete";
 import { getBusinessTodayIso } from "@/lib/business-date";
 import { cn } from "@/lib/utils";
 
@@ -53,10 +54,11 @@ export function BookingForm() {
     register,
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
   } = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
-    defaultValues: { company: "", eventDate: "" },
+    defaultValues: { company: "", eventDate: "", venue: "", venuePlaceId: "" },
   });
 
   async function onSubmit(data: BookingFormValues) {
@@ -165,8 +167,27 @@ export function BookingForm() {
             )}
           />
         </Field>
-        <Field id="venue" label="Venue / City" error={errors.venue?.message}>
-          <input id="venue" type="text" className={inputClasses} {...register("venue")} />
+        <Field id="venue" label="Venue / City / Address" error={errors.venue?.message}>
+          <Controller
+            name="venue"
+            control={control}
+            render={({ field }) => (
+              <LocationAutocomplete
+                id="venue"
+                value={field.value ?? ""}
+                onChange={(value, suggestion) => {
+                  field.onChange(value);
+                  setValue("venuePlaceId", suggestion?.placeId ?? "", { shouldDirty: true });
+                }}
+                onBlur={field.onBlur}
+                className={inputClasses}
+                invalid={Boolean(errors.venue)}
+                describedBy={errors.venue ? "venue-error" : undefined}
+                apiKey={process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY}
+              />
+            )}
+          />
+          <input type="hidden" {...register("venuePlaceId")} />
         </Field>
         <Field id="guestCount" label="Guest Count" error={errors.guestCount?.message}>
           <input id="guestCount" type="text" className={inputClasses} {...register("guestCount")} />
