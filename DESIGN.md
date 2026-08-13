@@ -86,6 +86,13 @@ components:
     typography: "{typography.body}"
     rounded: "{rounded.square}"
     padding: "0 0 10px"
+  location-autocomplete:
+    backgroundColor: "{colors.black}"
+    textColor: "{colors.white}"
+    activeBackgroundColor: "{colors.violet}"
+    activeTextColor: "{colors.black}"
+    typography: "{typography.body}"
+    rounded: "{rounded.square}"
 ---
 
 # Design System: KNWLDG
@@ -218,6 +225,7 @@ A static chip never gains a hover, focus, or selected state. If a chip needs one
 - **Focus:** Magenta underline with a visible keyboard focus state.
 - **Error / Disabled:** Magenta message and underline for errors; submitting states disable the fieldset and reduce the action opacity.
 - **Date Picker:** The trigger matches the underlined fields. The floating calendar is Black with White hierarchy, Violet selection, Magenta focus, and Orchid for today. Past dates are visibly disabled.
+- **Location Autocomplete:** The venue field accepts cities, venue names, and full U.S. addresses. Its square Black listbox uses White hierarchy and a solid Violet active option, returns no more than six results, and is biased toward the Northeast without excluding other U.S. inquiries. Manual entry must remain available when Geoapify is missing or unavailable, and Geoapify attribution remains visible whenever the integration is active.
 
 ### Iconography
 
@@ -287,6 +295,7 @@ Standard reveals animate opacity from 0 to 1 and translate vertically from `16px
 - **Do** keep the `1440px` content cap and use the `900px` content breakpoint before inventing another.
 - **Do** use 1px shared seams for repeated content grids.
 - **Do** maintain 4.5:1 text contrast, visible focus states, 44px touch targets, and reduced-motion behavior.
+- **Do** keep location entry usable without JavaScript suggestions or a successful Geoapify response.
 - **Do** verify the animated hero in a GPU-backed browser across multiple frames.
 
 ### Don't:
