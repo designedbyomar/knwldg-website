@@ -45,3 +45,7 @@ next-env.d.ts
 
 # Internal status tracker: enumerates unfixed defensive gaps, repo is public
 AUDIT.md
+
+# Gallery masters. Only the transcoded output in public/media/ is committed;
+# regenerate with `node scripts/build-media.mjs`.
+public/Pics and vids/

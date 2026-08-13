@@ -1,7 +1,8 @@
-import { CAPABILITIES, GALLERY } from "@/data/capabilities";
+import { CAPABILITIES } from "@/data/capabilities";
 import { Chip } from "@/components/ui/chip";
 import { Reveal } from "@/components/ui/reveal";
 import { Container } from "@/components/layout/container";
+import { MediaStrip } from "./media-strip";
 
 export function CapabilitiesGallery() {
   return (
@@ -24,23 +25,10 @@ export function CapabilitiesGallery() {
           </div>
         </Reveal>
 
-        <div className="grid grid-cols-1 gap-px bg-fg/10 content:grid-cols-5">
-          {GALLERY.map((item, i) => (
-            <Reveal
-              key={item.label}
-              delay={i * 0.06}
-              className="flex aspect-3/4 items-center justify-center p-4 text-center"
-              style={{
-                backgroundImage:
-                  "repeating-linear-gradient(135deg, var(--color-bg), var(--color-bg) 10px, rgb(255 255 255 / 0.06) 10px, rgb(255 255 255 / 0.06) 20px)",
-              }}
-            >
-              <span className="font-ui text-[10px] uppercase tracking-[0.08em] text-fg/70">
-                {item.label}
-              </span>
-            </Reveal>
-          ))}
-        </div>
+        {/* The strip is a client leaf; this section stays server-rendered. */}
+        <Reveal>
+          <MediaStrip />
+        </Reveal>
       </Container>
     </section>
   );

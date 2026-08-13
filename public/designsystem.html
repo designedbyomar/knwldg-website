@@ -217,6 +217,26 @@
   .gradient-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 40px; }
   /* Icon specimens. Rendered at the documented 20px/1.75 so the page shows the
      real token, not a scaled-up illustration of it. */
+  /* Media strip specimen. Tiles carry the real 28px overlap and cast edge so
+     the page shows the actual token, not a diagram of it. */
+  .media-demo { display: flex; }
+  .media-tile { position: relative; flex: 0 0 auto; width: calc((100% + 112px) / 5); aspect-ratio: 3/4;
+    background: var(--brand-gradient-diagonal); }
+  .media-tile + .media-tile { margin-left: -28px; box-shadow: -14px 0 24px -8px rgb(0 0 0 / 0.9); }
+  .media-tile:nth-child(1) { z-index: 1; } .media-tile:nth-child(2) { z-index: 2; }
+  .media-tile:nth-child(3) { z-index: 3; } .media-tile:nth-child(4) { z-index: 4; }
+  .media-tile:nth-child(5) { z-index: 5; }
+  .media-tile.is-active { z-index: 9; transform: scale(1.04);
+    box-shadow: 0 0 40px -4px rgb(0 0 0 / 0.95); }
+  /* Stand-in for a photograph: a grey field so the duotone overlay has real
+     luminance to recolour, exactly as it would over a desaturated frame. */
+  .media-tile::before { content: ""; position: absolute; inset: 0;
+    background: repeating-linear-gradient(150deg, #2a2a2a, #2a2a2a 14px, #4a4a4a 14px, #4a4a4a 28px); }
+  .media-tile::after { content: ""; position: absolute; inset: 0;
+    background: var(--brand-gradient-diagonal); mix-blend-mode: color; opacity: 0.85; }
+  .media-tile.is-active::after { opacity: 0; }
+  .media-tile.is-active::before { background: repeating-linear-gradient(150deg, #3a1f4d, #3a1f4d 14px, #7a3f6d 14px, #7a3f6d 28px); }
+
   .icon-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
   .icon-spec { background: var(--color-bg); padding: 20px 16px; }
   .icon-spec svg { width: 20px; height: 20px; display: block; margin-bottom: 14px; }
@@ -703,6 +723,19 @@
       </div>
 
       <p style="font-size: 13px; color: var(--fg-dim); margin: 20px 0 0; max-width: 70ch;"><b style="color: var(--color-fg);">Icons are decorative.</b> Adjacent text always carries the meaning, so every icon is <code>aria-hidden</code> and none receives a label. <b style="color: var(--color-fg);">The One Icon Library Rule:</b> a second icon library is forbidden &mdash; mixing sets puts two optical grids and two stroke weights on one page.</p>
+      <h3 style="margin-top: 44px;">Media Strip</h3>
+      <p style="font-size: 13px; color: var(--fg-dim); margin: 0 0 20px; max-width: 74ch;">Five <code>3:4</code> tiles, each pulled <code>28px</code> onto the one before it. <b style="color: var(--color-fg);">This is the only place in the system where surfaces overlap</b> &mdash; everywhere else keeps strict 1px seams and flat planes. It also earns the one shadow permitted outside the calendar popover: without a cast edge the overlap is geometrically correct and visually invisible.</p>
+
+      <div class="media-demo">
+        <div class="media-tile"></div>
+        <div class="media-tile"></div>
+        <div class="media-tile is-active"></div>
+        <div class="media-tile"></div>
+        <div class="media-tile"></div>
+      </div>
+      <p style="font-size: 11px; color: var(--fg-faint); font-family: 'KD Code', monospace; margin: 10px 0 0;">third tile shown active &middot; overlap 28px &middot; rest: grayscale(1) + brand gradient at mix-blend-mode: color, 0.85</p>
+
+      <p style="font-size: 13px; color: var(--fg-dim); margin: 20px 0 0; max-width: 74ch;"><b style="color: var(--color-fg);">Filter.</b> Rests fully desaturated (<code>grayscale(1)</code>) under the brand gradient at <code>mix-blend-mode: color</code>, <code>opacity 0.85</code>, which takes hue from the overlay and luminance from the frame beneath &mdash; a true duotone rather than a wash. On hover, focus or playback the media returns to <code>grayscale(0)</code> and the overlay fades to <code>0</code>, snapping the tile to its real colour. Tiles carry no visible caption; each is a button with an <code>aria-label</code>. <b style="color: var(--color-fg);">Playback.</b> Every clip is muted, looping, <code>playsInline</code>, <code>preload="none"</code> with a poster. Fine pointer plays on hover <i>and focus</i>, because hover-only playback is unreachable by keyboard. Coarse pointer plays the most-visible clip, one at a time. Reduced motion never autoplays &mdash; the poster stands in.</p>
     </section>
 
     <section class="doc" id="motion">
