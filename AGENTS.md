@@ -90,21 +90,31 @@ public/brand/   logo, portrait, and the alpha-only portrait mask
 ## Git workflow
 
 **Never commit or push directly to `main`.** Every change — including one-line
-fixes and docs-only edits — goes on a branch:
+fixes and docs-only edits — goes on a branch.
+
+**Each git step is a separate instruction. Do the work, then stop.**
+
+| Step | Who decides |
+|---|---|
+| Branch from an up-to-date `main`, edit files, run the gates | You — this is the work |
+| `git commit` | **Wait to be asked** |
+| `git push` | **Wait to be asked** |
+| `gh pr create` | **Wait to be asked** |
+| Merging a PR | **Wait to be asked** |
 
 ```bash
 git checkout main && git pull
 git checkout -b <type>/<short-description>
-# work, commit
-git push -u origin <branch>
-# then stop and report
+# make the changes, run tsc / lint / test
+# then stop and report what is ready
 ```
 
-**Do not open the pull request automatically.** Push the branch, say what is on
-it, and wait to be asked. A PR notifies people and starts a review, and that
-timing belongs to the repo owner rather than to you. Pushing further commits to
-a branch that *already* has an open PR is fine — that updates an existing review
-rather than starting one. Never merge a PR yourself unless asked.
+Report what is staged and what the gates said, and let the owner call each
+step. Committing decides what enters history, pushing makes it visible, and a
+PR starts a review that notifies people — those are the owner's calls, not
+yours. Pushing further commits to a branch that *already* has an open PR
+updates an existing review rather than starting one, but it is still a push, so
+it still waits.
 
 If you have already committed to a local `main` by mistake, move those commits
 onto a branch and reset `main` back to `origin/main` rather than pushing them.
