@@ -371,7 +371,9 @@
   .demo-location-option b { display: block; font-family: 'KD UI', sans-serif; font-size: 11px; }
   .demo-location-option span { display: block; margin-top: 3px; font-size: 10px; color: var(--fg-faint); }
   .demo-location-option.active span { color: rgb(0 0 0 / 0.62); }
-  .demo-location-credit { display: block; padding: 8px 14px; font-family: 'KD UI', sans-serif; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-faint); }
+  .demo-location-credit { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 14px; font-family: 'KD UI', sans-serif; font-size: 9px; letter-spacing: 0.04em; color: var(--fg-faint); }
+  .demo-location-credit a { color: inherit; }
+  .demo-location-helper { width: 100%; margin-top: 6px; font-family: 'KD UI', sans-serif; font-size: 9px; letter-spacing: 0.04em; color: var(--fg-faint); }
 
   .demo-date-trigger {
     width: min(100%, 310px); display: flex; align-items: center; justify-content: space-between;
@@ -667,8 +669,9 @@
             <div class="demo-location-menu">
               <div class="demo-location-option active"><b>The Society Room of Hartford</b><span>31 Pratt Street, Hartford, CT 06103</span></div>
               <div class="demo-location-option"><b>Hartford</b><span>Hartford, CT, United States</span></div>
-              <a class="demo-location-credit" href="https://www.geoapify.com/" target="_blank" rel="noreferrer">Powered by Geoapify</a>
+              <div class="demo-location-credit"><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">&copy; OpenStreetMap contributors</a><span aria-hidden="true">&middot;</span><a href="https://www.geoapify.com/" target="_blank" rel="noreferrer">Powered by Geoapify</a></div>
             </div>
+            <div class="demo-location-helper">Start typing a venue, city, or address.</div>
           </div>
         </div>
         <div class="comp-pane">

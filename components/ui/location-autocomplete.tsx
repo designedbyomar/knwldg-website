@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import {
   GEOAPIFY_ATTRIBUTION_URL,
+  OPENSTREETMAP_ATTRIBUTION_URL,
   buildGeoapifyAutocompleteUrl,
   parseGeoapifySuggestions,
   type LocationSuggestion,
@@ -178,14 +179,25 @@ export function LocationAutocomplete({
               </li>
             ))}
           </ul>
-          <a
-            href={GEOAPIFY_ATTRIBUTION_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="block px-4 py-2 font-ui text-[9px] uppercase tracking-[0.08em] text-fg/45 transition-colors hover:text-violet"
-          >
-            Powered by Geoapify
-          </a>
+          <div className="flex flex-wrap items-center gap-x-1.5 px-4 py-2 font-ui text-[9px] tracking-[0.04em] text-fg/45">
+            <a
+              href={OPENSTREETMAP_ATTRIBUTION_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="transition-colors hover:text-violet"
+            >
+              © OpenStreetMap contributors
+            </a>
+            <span aria-hidden="true">·</span>
+            <a
+              href={GEOAPIFY_ATTRIBUTION_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="transition-colors hover:text-violet"
+            >
+              Powered by Geoapify
+            </a>
+          </div>
         </div>
       ) : null}
 
@@ -200,17 +212,11 @@ export function LocationAutocomplete({
       </div>
 
       {apiKey ? (
-        <div className="mt-1.5 flex items-center justify-between gap-3 font-ui text-[9px] tracking-[0.04em] text-fg/40">
-          <span>{requestFailed ? "Suggestions unavailable; manual entry still works." : "Start typing a venue, city, or address."}</span>
-          <a
-            href={GEOAPIFY_ATTRIBUTION_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="shrink-0 transition-colors hover:text-violet"
-          >
-            Powered by Geoapify
-          </a>
-        </div>
+        <p className="mt-1.5 w-full font-ui text-[9px] tracking-[0.04em] text-fg/40">
+          {requestFailed
+            ? "Suggestions unavailable; manual entry still works."
+            : "Start typing a venue, city, or address."}
+        </p>
       ) : null}
     </div>
   );
