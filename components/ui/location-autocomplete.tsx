@@ -187,7 +187,7 @@ export function LocationAutocomplete({
               </li>
             ))}
           </ul>
-          <div className="flex flex-wrap items-center gap-x-1.5 px-4 py-2 font-ui text-[9px] tracking-[0.04em] text-fg/45">
+          <div className="flex flex-wrap items-center gap-x-1.5 px-4 py-2 font-ui text-[9px] tracking-[0.04em] text-fg/50">
             <a
               href={OPENSTREETMAP_ATTRIBUTION_URL}
               target="_blank"
@@ -220,7 +220,7 @@ export function LocationAutocomplete({
       </div>
 
       {apiKey ? (
-        <p className="mt-1.5 w-full font-ui text-[9px] tracking-[0.04em] text-fg/40">
+        <p className="mt-1.5 w-full font-ui text-[9px] tracking-[0.04em] text-fg/50">
           {requestFailed
             ? LOCATION_AUTOCOMPLETE_COPY.unavailableHelper
             : LOCATION_AUTOCOMPLETE_COPY.helper}

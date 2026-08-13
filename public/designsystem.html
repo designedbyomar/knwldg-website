@@ -215,6 +215,19 @@
   .neutral-label .token { font-family: 'KD Code', monospace; font-size: 9px; color: var(--fg-faint); }
 
   .gradient-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 40px; }
+  /* Opacity ladder. Each row prints its own step at that opacity, so the page
+     demonstrates the value rather than describing it. */
+  .ladder { border: 1px solid var(--line); }
+  .ladder-row { display: grid; grid-template-columns: 120px 90px 1fr; gap: 16px; align-items: baseline;
+    padding: 10px 16px; border-bottom: 1px solid var(--line);
+    font-family: 'KD Code', monospace; font-size: 11px; }
+  .ladder-row:last-child { border-bottom: 0; }
+  .ladder-row.is-floor { background: rgb(255 255 255 / 0.04); }
+  .ladder-ratio { color: var(--fg-dim); }
+  .is-pass { color: var(--color-ultraviolet); }
+  .is-fail { color: var(--color-rose); }
+  .is-exempt { color: var(--fg-faint); }
+
   /* Icon specimens. Rendered at the documented 20px/1.75 so the page shows the
      real token, not a scaled-up illustration of it. */
   /* Media strip specimen. Tiles carry the real 28px overlap and cast edge so
@@ -400,6 +413,14 @@
   .demo-location-credit { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 14px; font-family: 'KD UI', sans-serif; font-size: 9px; letter-spacing: 0.04em; color: var(--fg-faint); }
   .demo-location-credit a { color: inherit; }
   .demo-location-helper { width: 100%; margin-top: 6px; font-family: 'KD UI', sans-serif; font-size: 9px; letter-spacing: 0.04em; color: var(--fg-faint); }
+  .demo-unified-footer { display: flex; align-items: center; justify-content: space-between; gap: 32px; }
+  .demo-unified-footer > img { width: 96px; height: auto; flex: 0 0 auto; }
+  .demo-contact-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0 24px; }
+  .demo-contact-actions a { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; padding: 0 8px; color: var(--color-fg); font-family: 'KD UI', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; white-space: nowrap; }
+  .demo-contact-actions a:hover { color: var(--color-violet); }
+  .demo-contact-actions svg { width: 20px; height: 20px; }
+  .demo-contact-actions .icon-violet { color: var(--color-violet); }
+  @media (min-width: 640px) { .demo-contact-actions { flex-wrap: nowrap; } }
 
   .demo-date-trigger {
     width: min(100%, 310px); display: flex; align-items: center; justify-content: space-between;
@@ -487,6 +508,8 @@
     .neutrals, .gradient-grid, .favicon-showcase { grid-template-columns: 1fr; }
     .inset-panel-demo .panel { grid-template-columns: 1fr; }
     .comp-block { grid-template-columns: 1fr; }
+    .demo-unified-footer { flex-direction: column; justify-content: center; }
+    .demo-contact-actions { justify-content: center; }
   }
 </style>
 
@@ -540,6 +563,18 @@
         <div class="neutral-swatch"><div class="neutral-fill" style="background: var(--color-fg)"></div><div class="neutral-label"><div class="name">White</div><div class="token">--color-fg</div></div></div>
       </div>
       <p style="font-size: 12px; color: var(--fg-faint); margin: -20px 0 40px;">Surface depth comes from white transparency over black, never from additional gray or tinted-neutral tokens.</p>
+
+      <h3>Muted Text Floor</h3>
+      <p style="font-size: 13px; color: var(--fg-dim); margin: 0 0 18px; max-width: 74ch;">The Two-Neutral Rule says build hierarchy with opacity, but never said how far down. That gap produced four real contrast failures. <b style="color: var(--color-fg);"><code>text-fg/50</code> is the floor for normal text on black.</b> <code>/45</code> is the dangerous one &mdash; it looks fine and misses by 0.09.</p>
+      <div class="ladder">
+        <div class="ladder-row"><span style="color: rgb(255 255 255 / 0.30)">text-fg/30</span><span class="ladder-ratio">2.46:1</span><span class="is-exempt">disabled / decorative only</span></div>
+        <div class="ladder-row"><span style="color: rgb(255 255 255 / 0.40)">text-fg/40</span><span class="ladder-ratio">3.66:1</span><span class="is-fail">fails 1.4.3</span></div>
+        <div class="ladder-row"><span style="color: rgb(255 255 255 / 0.45)">text-fg/45</span><span class="ladder-ratio">4.41:1</span><span class="is-fail">fails 1.4.3</span></div>
+        <div class="ladder-row is-floor"><span style="color: rgb(255 255 255 / 0.50)">text-fg/50</span><span class="ladder-ratio">5.28:1</span><span class="is-pass">the floor</span></div>
+        <div class="ladder-row"><span style="color: rgb(255 255 255 / 0.55)">text-fg/55</span><span class="ladder-ratio">6.27:1</span><span class="is-pass">safe</span></div>
+        <div class="ladder-row"><span style="color: rgb(255 255 255 / 0.65)">text-fg/65</span><span class="ladder-ratio">8.60:1</span><span class="is-pass">safe</span></div>
+      </div>
+      <p style="font-size: 12px; color: var(--fg-faint); margin: 14px 0 40px;">Disabled and decorative text is exempt &mdash; the calendar&rsquo;s outside days stay at <code>/30</code>. Enforced by <code>tests/a11y-contrast.test.tsx</code>.</p>
 
       <h3>Current Usage</h3>
       <table class="type-table" style="margin-bottom: 40px;">
@@ -740,6 +775,20 @@
   &boxur;&boxh;&boxh; <span class="k">PopoverContent</span>
       &boxur;&boxh;&boxh; <span class="k">Calendar</span> mode=<span class="s">"single"</span></pre>
       <p style="font-size: 13px; color: var(--fg-dim); margin: -12px 0 0;"><b style="color: var(--color-fg);">The booking date picker follows Shadcn composition.</b> Black is the surface, white provides hierarchy, Violet marks selection, Magenta marks focus, and Orchid marks today.</p>
+      <h3 style="margin-top: 44px;">Footer Contact Actions</h3>
+      <div class="comp-pane" style="margin-bottom: 20px;">
+        <div class="comp-pane-label">One Footer Plane &middot; 44px Minimum Targets</div>
+        <div class="demo-unified-footer">
+          <img src="/brand/knwldg-mark-gradient.svg" alt="KNWLDG">
+          <nav class="demo-contact-actions" aria-label="Contact KNWLDG">
+            <a href="sms:+18604692202"><svg class="icon-violet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z"/><path d="M8 8h8M8 12h6"/></svg>Text</a>
+            <a href="tel:+18604692202"><svg class="icon-violet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.62 2.63a2 2 0 0 1-.45 2.11L8 9.73a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.85.29 1.73.5 2.63.62A2 2 0 0 1 22 16.92Z"/></svg>Call</a>
+            <a href="mailto:hello@djknwldg.com"><svg class="icon-violet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>Email</a>
+            <a href="/knwldg-omar-tavarez.vcf" download><svg class="icon-violet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 18a4 4 0 0 0-8 0"/><circle cx="12" cy="11" r="3"/><rect width="18" height="18" x="3" y="3" rx="2"/></svg>Save Contact</a>
+          </nav>
+        </div>
+      </div>
+      <p style="font-size: 13px; color: var(--fg-dim); margin: -8px 0 0; max-width: 70ch;">The logo and four actions share one responsive footer plane. At <code>900px</code>, the complete action group moves below the logo; it stays on one line until <code>640px</code>, then wraps only between whole actions. Labels stay White and every Lucide icon is Violet. Native <code>sms:</code>, <code>tel:</code>, and <code>mailto:</code> links handle immediate contact, while one cross-platform <code>.vcf</code> serves iPhone and Android.</p>
       <!-- Explicit top margin: the global h3 rule is `margin: 0 0 16px` and the
            paragraph above ends with `margin: -12px 0 0`, so without this the
            heading collides with it. -->
