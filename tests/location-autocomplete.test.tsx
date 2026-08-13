@@ -6,6 +6,7 @@ import { act, cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { useState } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { LocationAutocomplete } from "@/components/ui/location-autocomplete";
+import { LOCATION_AUTOCOMPLETE_COPY } from "@/data/booking-copy";
 import type { LocationSuggestion } from "@/lib/geoapify";
 
 const results = [
@@ -97,6 +98,17 @@ describe("LocationAutocomplete interactions", () => {
     expect(screen.getByRole("status")).toHaveTextContent(
       "2 location suggestions available"
     );
+    expect(
+      screen.getByRole("link", {
+        name: LOCATION_AUTOCOMPLETE_COPY.openStreetMapAttribution,
+      })
+    ).toHaveAttribute("href", "https://www.openstreetmap.org/copyright");
+    expect(
+      screen.getByRole("link", {
+        name: LOCATION_AUTOCOMPLETE_COPY.geoapifyAttribution,
+      })
+    ).toHaveAttribute("href", "https://www.geoapify.com/");
+    expect(screen.getAllByRole("link")).toHaveLength(2);
     expect(input).toHaveAttribute("aria-expanded", "true");
 
     fireEvent.keyDown(input, { key: "ArrowDown" });

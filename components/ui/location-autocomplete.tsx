@@ -2,7 +2,12 @@
 
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import {
+  formatLocationSuggestionsAvailable,
+  LOCATION_AUTOCOMPLETE_COPY,
+} from "@/data/booking-copy";
+import {
   GEOAPIFY_ATTRIBUTION_URL,
+  OPENSTREETMAP_ATTRIBUTION_URL,
   buildGeoapifyAutocompleteUrl,
   parseGeoapifySuggestions,
   type LocationSuggestion,
@@ -147,7 +152,11 @@ export function LocationAutocomplete({
 
       {expanded ? (
         <div className="absolute left-0 right-0 top-full z-40 border border-fg/15 bg-bg shadow-[0_18px_60px_rgb(0_0_0/0.65)]">
-          <ul id={listboxId} role="listbox" aria-label="Venue and location suggestions">
+          <ul
+            id={listboxId}
+            role="listbox"
+            aria-label={LOCATION_AUTOCOMPLETE_COPY.suggestionsLabel}
+          >
             {suggestions.map((suggestion, index) => (
               <li key={suggestion.placeId} role="presentation">
                 <button
@@ -178,39 +187,44 @@ export function LocationAutocomplete({
               </li>
             ))}
           </ul>
-          <a
-            href={GEOAPIFY_ATTRIBUTION_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="block px-4 py-2 font-ui text-[9px] uppercase tracking-[0.08em] text-fg/45 transition-colors hover:text-violet"
-          >
-            Powered by Geoapify
-          </a>
+          <div className="flex flex-wrap items-center gap-x-1.5 px-4 py-2 font-ui text-[9px] tracking-[0.04em] text-fg/45">
+            <a
+              href={OPENSTREETMAP_ATTRIBUTION_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="transition-colors hover:text-violet"
+            >
+              {LOCATION_AUTOCOMPLETE_COPY.openStreetMapAttribution}
+            </a>
+            <span aria-hidden="true">·</span>
+            <a
+              href={GEOAPIFY_ATTRIBUTION_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="transition-colors hover:text-violet"
+            >
+              {LOCATION_AUTOCOMPLETE_COPY.geoapifyAttribution}
+            </a>
+          </div>
         </div>
       ) : null}
 
       <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
         {isLoading
-          ? "Finding locations"
+          ? LOCATION_AUTOCOMPLETE_COPY.loadingStatus
           : expanded
-            ? `${suggestions.length} location suggestions available`
+            ? formatLocationSuggestionsAvailable(suggestions.length)
             : requestFailed
-              ? "Location suggestions are unavailable. Continue entering the location manually."
+              ? LOCATION_AUTOCOMPLETE_COPY.unavailableStatus
               : ""}
       </div>
 
       {apiKey ? (
-        <div className="mt-1.5 flex items-center justify-between gap-3 font-ui text-[9px] tracking-[0.04em] text-fg/40">
-          <span>{requestFailed ? "Suggestions unavailable; manual entry still works." : "Start typing a venue, city, or address."}</span>
-          <a
-            href={GEOAPIFY_ATTRIBUTION_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="shrink-0 transition-colors hover:text-violet"
-          >
-            Powered by Geoapify
-          </a>
-        </div>
+        <p className="mt-1.5 w-full font-ui text-[9px] tracking-[0.04em] text-fg/40">
+          {requestFailed
+            ? LOCATION_AUTOCOMPLETE_COPY.unavailableHelper
+            : LOCATION_AUTOCOMPLETE_COPY.helper}
+        </p>
       ) : null}
     </div>
   );

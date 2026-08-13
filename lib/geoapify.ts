@@ -2,6 +2,8 @@ export const GEOAPIFY_AUTOCOMPLETE_ENDPOINT =
   "https://api.geoapify.com/v1/geocode/autocomplete";
 
 export const GEOAPIFY_ATTRIBUTION_URL = "https://www.geoapify.com/";
+export const OPENSTREETMAP_ATTRIBUTION_URL =
+  "https://www.openstreetmap.org/copyright";
 
 // Broad Northeast bounds, used as a preference rather than a restriction so
 // inquiries elsewhere in the United States still work.
