@@ -145,6 +145,21 @@ The palette behaves like a light rig: black is the room, white is the readable s
 
 **The Two-Neutral Rule.** Black and White are the complete neutral palette. Create hierarchy with opacity, not extra gray or tinted-neutral tokens.
 
+**The Muted Text Floor.** `text-fg/50` is the lowest opacity permitted for normal text on black. Measured against the black ground:
+
+| Step | Renders | Contrast | |
+|---|---|---|---|
+| `text-fg/30` | `#4c4c4c` | 2.46:1 | disabled or decorative only |
+| `text-fg/40` | `#666666` | 3.66:1 | **fails 1.4.3** |
+| `text-fg/45` | `#737373` | 4.41:1 | **fails 1.4.3** |
+| **`text-fg/50`** | `#808080` | **5.28:1** | the floor |
+| `text-fg/55` | `#8c8c8c` | 6.27:1 | safe |
+| `text-fg/65` | `#a6a6a6` | 8.60:1 | safe |
+
+The Two-Neutral Rule says to build hierarchy with opacity but never said how far down it may go, and that gap produced four real contrast failures — the calendar's weekday headers, the date placeholder, and two in the location autocomplete. `/45` is the dangerous one: it looks fine and misses by 0.09.
+
+Disabled and purely decorative text is exempt, which is why the calendar's outside days stay at `/30`. `tests/a11y-contrast.test.tsx` enforces the floor.
+
 ## Typography
 
 **Display Font:** Anton (with sans-serif fallback)
@@ -185,6 +200,14 @@ The system is flat by default. Depth comes from black and white opacity, 1px gri
 ## Components
 
 Components are sharp, direct, and performance-ready. Their hierarchy comes from color role, border weight, spacing, and state. Chips are the intentional pill-shaped exception within an otherwise square system.
+
+### Skip Link
+
+The first focusable element on every route, hidden until it receives focus. It exists because there are eleven tab stops between the logo and the booking form — the page's only conversion — and WCAG 2.4.1 requires a way past them.
+
+- **Hidden state:** `sr-only`. Present in the DOM and to screen readers, invisible on screen.
+- **Focused state:** the secondary button treatment — Black fill, 1px White border at 30%, White label, square corners, uppercase `font-ui` at `12px`. Fixed at `top-4 left-6`, above the navigation's stacking context.
+- **Target:** `<main id="main-content" tabIndex={-1}>`. The `tabIndex` is required, not decorative: without it several browsers scroll to the target but leave keyboard focus behind, which is the exact failure the link exists to prevent.
 
 ### Buttons
 
@@ -276,6 +299,17 @@ This also does real work on inconsistent sources: the set ranges from a 720×480
 ### Navigation
 
 The navigation is fixed above the hero. At rest it has no plate, allowing the light rig to remain visible. After 24px of scroll, a Black surface at 85% opacity, a 1px White divider at 10%, and a restrained backdrop blur appear. Labels use uppercase Sora at `12px` with `0.12em` tracking. The logo always uses the Violet to Magenta identity asset.
+
+### Footer Contact Actions
+
+The footer is one flat responsive plane. At the `900px` content breakpoint and wider, the Violet-to-Magenta logo sits left of **Text**, **Call**, **Email**, and **Save Contact**, with all four actions held on one line. Below `900px`, the complete action group moves under the centered logo instead of partially wrapping beside it. From `640px` through `899px`, the four actions remain on one line; below `640px`, they may wrap only between complete actions. Icon and label never split internally.
+
+Each action uses uppercase Sora, a Violet Lucide icon at the shared `20px` / `1.75` token, a 44px minimum touch target, a White label, and the existing Violet hover plus Magenta focus treatment.
+
+- **Text:** Opens the device messaging app with `sms:+18604692202`.
+- **Call:** Opens the native phone handler with `tel:+18604692202`.
+- **Email:** Opens the mail client with `mailto:hello@djknwldg.com`.
+- **Save Contact:** Downloads a vCard named `KNWLDG (Omar Tavarez)` with the phone number, booking email, and site URL. The `.vcf` file is the cross-platform source for iPhone and Android; do not replace it with device-sniffing JavaScript.
 
 ### Open-Format Field
 

@@ -11,7 +11,10 @@ export default function Home() {
   return (
     <>
       <Nav />
-      <main>
+      {/* tabIndex={-1} is load-bearing: without it several browsers scroll to
+          the target but leave keyboard focus behind, which is the exact failure
+          the skip link exists to fix. */}
+      <main id="main-content" tabIndex={-1} className="outline-none">
         <Hero />
         <StatsStrip />
         <EventsGrid />

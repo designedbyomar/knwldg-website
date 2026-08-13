@@ -22,10 +22,10 @@ export type GalleryItem =
 export const GALLERY: GalleryItem[] = [
   {
     kind: "video",
-    label: "performance",
-    src: "/media/booth-performance.mp4",
-    poster: "/media/booth-performance.jpg",
-    alt: "KNWLDG behind the decks with projection visuals filling the wall",
+    label: "nightlife",
+    src: "/media/club-set.mp4",
+    poster: "/media/club-set.jpg",
+    alt: "KNWLDG mid-set in a club under coloured lighting",
   },
   {
     kind: "image",
@@ -35,10 +35,10 @@ export const GALLERY: GalleryItem[] = [
   },
   {
     kind: "video",
-    label: "equipment",
-    src: "/media/deck-closeup.mp4",
-    poster: "/media/deck-closeup.jpg",
-    alt: "Close view of the controller, cue pads lit across the deck",
+    label: "performance",
+    src: "/media/booth-performance.mp4",
+    poster: "/media/booth-performance.jpg",
+    alt: "KNWLDG behind the decks with projection visuals filling the wall",
   },
   {
     kind: "image",
@@ -48,9 +48,9 @@ export const GALLERY: GalleryItem[] = [
   },
   {
     kind: "video",
-    label: "nightlife",
-    src: "/media/club-set.mp4",
-    poster: "/media/club-set.jpg",
-    alt: "KNWLDG mid-set in a club under coloured lighting",
+    label: "equipment",
+    src: "/media/deck-closeup.mp4",
+    poster: "/media/deck-closeup.jpg",
+    alt: "Close view of the controller, cue pads lit across the deck",
   },
 ];

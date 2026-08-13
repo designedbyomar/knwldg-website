@@ -54,7 +54,9 @@ export function DatePicker({
           data-invalid={invalid || undefined}
           className={cn(
             "flex w-full items-center justify-between border-0 border-b-2 border-fg/15 bg-transparent pb-2.5 text-left font-body text-sm outline-none transition-colors hover:border-fg/30 focus-visible:border-magenta",
-            selectedDate ? "text-fg" : "text-fg/45",
+            // /50 is the muted-text floor: 5.28:1 on black. /45 measured
+            // 4.41:1 and failed 1.4.3 by a hair. See DESIGN.md > Colors.
+            selectedDate ? "text-fg" : "text-fg/50",
             invalid && "border-magenta"
           )}
         >

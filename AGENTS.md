@@ -92,34 +92,34 @@ public/brand/   logo, portrait, and the alpha-only portrait mask
 ## Git workflow
 
 **Never commit or push directly to `main`.** Every change — including one-line
-fixes and docs-only edits — goes on a branch.
+fixes and docs-only edits — goes through a task branch and pull request.
 
-**Each git step is a separate instruction. Do the work, then stop.**
+The default delivery workflow is automatic. Do not wait for a separate request
+to commit, push, or open the PR after the requested work is complete:
 
-| Step | Who decides |
-|---|---|
-| Branch from an up-to-date `main`, edit files, run the gates | You — this is the work |
-| `git commit` | **Wait to be asked** |
-| `git push` | **Wait to be asked** |
-| `gh pr create` | **Wait to be asked** |
-| Merging a PR | **Wait to be asked** |
+1. Before editing, inspect the current branch, worktree, and related open PRs.
+2. If the current branch is `main`, update it and create a focused branch such
+   as `<type>/<short-description>`. If the current task already has a suitable
+   non-main branch, keep using it.
+3. Preserve unrelated work and stage only files that belong to the task.
+4. Run the relevant gates. Fix in-scope failures before publishing; if a
+   blocker remains, report it instead of publishing broken work.
+5. Commit the completed change with a focused, imperative message and push the
+   task branch.
+6. Check for an open PR from that branch. If none exists, open a ready-for-review
+   PR against `main` with a summary and validation notes. If one exists, update
+   it by pushing the new commit rather than creating a duplicate PR.
+7. Report the branch, commit, PR URL, and verification results.
 
-```bash
-git checkout main && git pull
-git checkout -b <type>/<short-description>
-# make the changes, run tsc / lint / test
-# then stop and report what is ready
-```
+A branch gets one review lifecycle. If its earlier PR was closed or merged,
+start the next task from an up-to-date `main` on a fresh branch rather than
+reusing that branch. If work was started on `main` accidentally, create the
+task branch before committing and preserve the worktree; never push the commit
+to `main`.
 
-Report what is staged and what the gates said, and let the owner call each
-step. Committing decides what enters history, pushing makes it visible, and a
-PR starts a review that notifies people — those are the owner's calls, not
-yours. Pushing further commits to a branch that *already* has an open PR
-updates an existing review rather than starting one, but it is still a push, so
-it still waits.
-
-If you have already committed to a local `main` by mistake, move those commits
-onto a branch and reset `main` back to `origin/main` rather than pushing them.
+The repository owner reviews and merges manually. Never merge a PR, enable
+auto-merge, bypass branch protection, force-push, or delete a branch unless the
+owner explicitly asks for that separate action.
 
 ## Design documentation sync
 
@@ -199,9 +199,5 @@ anything in `components/three/` or `components/sections/hero*`.
 
 ## Known gaps
 
-Two live issues, both known and unfixed:
-
-- Scroll reveals ship `opacity:0` inline in the server HTML
-  (`components/ui/reveal.tsx`), so with JS disabled everything below the hero is
-  invisible. Text is still in the DOM for crawlers that parse HTML.
-- The footer Instagram link points at the bare domain with no handle.
+No public implementation gaps are currently documented here. Keep private
+operational and launch-readiness findings in the untracked `AUDIT.md`.

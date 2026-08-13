@@ -59,7 +59,10 @@ function Calendar({
         month_grid: cn("w-full border-collapse", defaultClassNames.month_grid),
         weekdays: cn("flex", defaultClassNames.weekdays),
         weekday: cn(
-          "flex size-(--cell-size) items-center justify-center text-[10px] font-medium uppercase tracking-[0.08em] text-fg/40 select-none",
+          // /50 is the muted-text floor (5.28:1 on black). At /40 these seven
+          // day names measured 3.66:1 and were the largest contrast failure on
+          // the site. See DESIGN.md > Colors.
+          "flex size-(--cell-size) items-center justify-center text-[10px] font-medium uppercase tracking-[0.08em] text-fg/50 select-none",
           defaultClassNames.weekday
         ),
         week: cn("mt-1 flex w-full", defaultClassNames.week),
