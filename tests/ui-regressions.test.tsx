@@ -53,6 +53,9 @@ describe("UI regressions", () => {
       "utf8"
     );
 
+    expect(card).toContain("\r\n");
+    expect(card.replaceAll("\r\n", "")).not.toContain("\n");
+    expect(card.endsWith("\r\n")).toBe(true);
     expect(card).toContain("FN:KNWLDG (Omar Tavarez)");
     expect(card).toContain("TEL;TYPE=CELL:+18604692202");
     expect(card).toContain("EMAIL;TYPE=INTERNET:hello@djknwldg.com");
