@@ -192,6 +192,7 @@ export function BookingForm() {
                 <Chip
                   key={option}
                   as="button"
+                  variant="interactive"
                   role="radio"
                   aria-checked={field.value === option}
                   selected={field.value === option}

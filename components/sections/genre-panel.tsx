@@ -14,7 +14,7 @@ export function GenrePanel() {
             </h2>
             <div className="flex flex-wrap gap-2.5">
               {GENRES.map((genre) => (
-                <Chip key={genre} variant="outline-dark">
+                <Chip key={genre} variant="static-light">
                   {genre}
                 </Chip>
               ))}

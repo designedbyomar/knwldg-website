@@ -361,6 +361,12 @@
   .demo-chip { border-radius: 9999px; font-family: 'KD UI', sans-serif; font-size: 11px; padding: 8px 15px; display: inline-block; margin-right: 8px; }
   .demo-chip.violet { border: 1px solid rgb(162 165 255 / 0.45); background: rgb(162 165 255 / 0.12); color: var(--color-violet); }
   .demo-chip.outline-dark { border: 1px solid rgb(0 0 0 / 0.3); color: rgb(0 0 0 / 0.85); }
+  /* Static chips: monotone, faint border, no states. The pane behind the
+     static-light specimen carries the gradient so the chip is shown on the
+     surface it is actually specified for. */
+  .demo-chip.static { border: 1px solid rgb(255 255 255 / 0.12); color: rgb(255 255 255 / 0.65); }
+  .demo-chip.static-light { border: 1px solid rgb(0 0 0 / 0.2); color: rgb(0 0 0 / 0.8); }
+  .comp-pane-light { background: var(--brand-gradient-diagonal); }
   .demo-chip.selected { border: 1px solid var(--color-violet); background: var(--color-violet); color: var(--color-ink); font-weight: 700; }
 
   .demo-date-trigger {
@@ -643,10 +649,14 @@
 
       <h3>Chip</h3>
       <div class="comp-block" style="margin-bottom: 12px;">
-        <div class="comp-pane"><div class="comp-pane-label">Violet &middot; Resting State</div><div class="demo-chip violet">Afrobeats</div></div>
-        <div class="comp-pane"><div class="comp-pane-label">Solid Violet &middot; Selected</div><div class="demo-chip selected">House</div></div>
+        <div class="comp-pane"><div class="comp-pane-label">Interactive &middot; Resting</div><div class="demo-chip violet">Under $1,000</div></div>
+        <div class="comp-pane"><div class="comp-pane-label">Interactive &middot; Selected</div><div class="demo-chip selected">$2,000&ndash;$3,000</div></div>
       </div>
-      <p style="font-size: 13px; color: var(--fg-dim); margin: 12px 0 28px;"><b style="color: var(--color-fg);">Violet carries both chip states.</b> Every chip is a fully rounded pill. Resting uses a translucent fill; selected uses solid Violet with Ink text.</p>
+      <div class="comp-block" style="margin-bottom: 12px;">
+        <div class="comp-pane"><div class="comp-pane-label">Static &middot; On Black</div><div class="demo-chip static">MC and microphone support</div></div>
+        <div class="comp-pane comp-pane-light"><div class="comp-pane-label" style="color: rgb(0 0 0 / 0.55);">Static &middot; On The Open-Format Field</div><div class="demo-chip static-light">Afrobeats</div></div>
+      </div>
+      <p style="font-size: 13px; color: var(--fg-dim); margin: 12px 0 28px; max-width: 78ch;"><b style="color: var(--color-fg);">Colour means interactive.</b> Every chip is a fully rounded pill, but the two families are semantic, not decorative. <b style="color: var(--color-fg);">Interactive</b> chips are the only ones a user can act on &mdash; currently just the budget selector &mdash; and carry Violet with a selected state. <b style="color: var(--color-fg);">Static</b> chips are read-only labels: capability lists and the genre row. They are monotone so nothing suggests a control, and their border is deliberately faint so a long row reads as one texture rather than as ten buttons. Pick <code>static</code> or <code>static-light</code> by the surface behind the chip, not by meaning. A static chip never gains a hover, focus, or selected state &mdash; if it needs one, it is interactive.</p>
 
       <h3>Date Picker</h3>
       <div class="comp-block">
