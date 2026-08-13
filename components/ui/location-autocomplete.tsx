@@ -2,6 +2,10 @@
 
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import {
+  formatLocationSuggestionsAvailable,
+  LOCATION_AUTOCOMPLETE_COPY,
+} from "@/data/booking-copy";
+import {
   GEOAPIFY_ATTRIBUTION_URL,
   OPENSTREETMAP_ATTRIBUTION_URL,
   buildGeoapifyAutocompleteUrl,
@@ -148,7 +152,11 @@ export function LocationAutocomplete({
 
       {expanded ? (
         <div className="absolute left-0 right-0 top-full z-40 border border-fg/15 bg-bg shadow-[0_18px_60px_rgb(0_0_0/0.65)]">
-          <ul id={listboxId} role="listbox" aria-label="Venue and location suggestions">
+          <ul
+            id={listboxId}
+            role="listbox"
+            aria-label={LOCATION_AUTOCOMPLETE_COPY.suggestionsLabel}
+          >
             {suggestions.map((suggestion, index) => (
               <li key={suggestion.placeId} role="presentation">
                 <button
@@ -186,7 +194,7 @@ export function LocationAutocomplete({
               rel="noreferrer"
               className="transition-colors hover:text-violet"
             >
-              © OpenStreetMap contributors
+              {LOCATION_AUTOCOMPLETE_COPY.openStreetMapAttribution}
             </a>
             <span aria-hidden="true">·</span>
             <a
@@ -195,7 +203,7 @@ export function LocationAutocomplete({
               rel="noreferrer"
               className="transition-colors hover:text-violet"
             >
-              Powered by Geoapify
+              {LOCATION_AUTOCOMPLETE_COPY.geoapifyAttribution}
             </a>
           </div>
         </div>
@@ -203,19 +211,19 @@ export function LocationAutocomplete({
 
       <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
         {isLoading
-          ? "Finding locations"
+          ? LOCATION_AUTOCOMPLETE_COPY.loadingStatus
           : expanded
-            ? `${suggestions.length} location suggestions available`
+            ? formatLocationSuggestionsAvailable(suggestions.length)
             : requestFailed
-              ? "Location suggestions are unavailable. Continue entering the location manually."
+              ? LOCATION_AUTOCOMPLETE_COPY.unavailableStatus
               : ""}
       </div>
 
       {apiKey ? (
         <p className="mt-1.5 w-full font-ui text-[9px] tracking-[0.04em] text-fg/40">
           {requestFailed
-            ? "Suggestions unavailable; manual entry still works."
-            : "Start typing a venue, city, or address."}
+            ? LOCATION_AUTOCOMPLETE_COPY.unavailableHelper
+            : LOCATION_AUTOCOMPLETE_COPY.helper}
         </p>
       ) : null}
     </div>
