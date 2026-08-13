@@ -187,9 +187,22 @@ Components are sharp, direct, and performance-ready. Their hierarchy comes from 
 
 ### Chips
 
-- **Style:** Fully rounded pill corners (`9999px`). Resting chips use a translucent Violet fill, Violet text, and a Violet border at 45% opacity.
-- **State:** Selected chips become solid Violet with semibold Black text. Selection never uses a gradient.
-- **Dark-surface variant:** On the open-format field, chips use a transparent fill, Black text at 85%, and a Black border at 30% opacity.
+Chips come in two families, and the split is semantic rather than decorative. **Colour means interactive.** A user should be able to tell from across the room whether a chip does anything.
+
+**Interactive chips** — the only chips a user can act on. Currently just the budget selector in the booking form.
+
+- **Shape:** Fully rounded pill corners (`9999px`).
+- **Resting:** Translucent Violet fill, Violet text, Violet border at 45% opacity.
+- **Selected:** Solid Violet with semibold Black text. Selection never uses a gradient.
+
+**Static chips** — read-only labels. Capability lists and the genre row. They are monotone on purpose: nothing about them should suggest a control, and their border is deliberately faint so a long row reads as one texture rather than as ten buttons.
+
+- **On black** (`static`): no fill, White border at 12% opacity, White text at 65%.
+- **On the open-format field** (`static-light`): no fill, Black border at 20% opacity, Black text at 80%. The variant is chosen by the surface behind the chip, not by meaning.
+
+A static chip never gains a hover, focus, or selected state. If a chip needs one, it is interactive and takes the accent treatment instead.
+
+**Why the faint border is allowed.** WCAG 1.4.11 requires a 3:1 contrast on the boundary of a *user interface component*, and the static border sits at roughly 1.27:1. That is compliant only because these are not controls — they are text labels with decoration. Measured text contrast stays well clear: 8.6:1 for `static` on black, and 7.1–7.3:1 for `static-light` across the full gradient range. The moment a chip becomes interactive it must take the accent treatment, whose border clears 3:1.
 
 ### Cards / Containers
 
@@ -223,6 +236,8 @@ The five event categories each carry one icon, tinted along the same Rose-to-Ult
 | Nightlife | `Disc3` | Ultraviolet |
 
 **The One Icon Library Rule.** Icons come from Lucide at `20px` / `1.75` stroke. A second icon library is forbidden — mixing sets puts two optical grids, two stroke weights, and two corner treatments on one page, which is exactly the incoherence the anti-references call out.
+
+**The Brand Mark Exception.** Third-party brand marks are the one exception, because Lucide ships none — it dropped brand icons for trademark reasons. Instagram, and any future social mark, comes from that brand's own guidelines rather than being redrawn in Lucide's style. Draw it at the same `20px` / `1.75` so the row still reads as one set, and inline it in the component: `currentColor` only inherits when the SVG is part of the document, so a mark loaded through `next/image` would paint black on the black footer.
 
 ### Navigation
 

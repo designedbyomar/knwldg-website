@@ -195,6 +195,10 @@
           "icon": "Disc3",
           "accent": "ultraviolet"
         }
+      },
+      "brandMarks": {
+        "instagram": "inlined in components/layout/footer.tsx",
+        "reason": "Lucide ships no brand icons; currentColor requires inline SVG"
       }
     }
   },
@@ -216,15 +220,15 @@
       "css": ".ds-btn-outline { background: var(--color-bg); color: var(--color-fg); padding: 12px 24px; border: 1px solid rgb(255 255 255 / 0.30); border-radius: 0; font-family: var(--font-ui); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; transition: border-color 150ms ease, transform 120ms ease; } .ds-btn-outline:hover { border-color: var(--color-fg); } .ds-btn-outline:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 3px; } .ds-btn-outline:active { transform: scale(0.97); }"
     },
     {
-      "name": "Resting Chip",
+      "name": "Interactive Chip - Resting",
       "kind": "chip",
       "refersTo": "chip-resting",
-      "description": "A fully rounded Violet category or choice chip in its unselected state.",
+      "description": "The only chip family a user can act on. Colour signals interactivity; currently just the budget selector.",
       "html": "<button class=\"ds-chip-resting\">AFROBEATS</button>",
       "css": ".ds-chip-resting { background: oklch(0.78 0.19 280 / 0.12); color: var(--color-violet); padding: 8px 16px; border: 1px solid oklch(0.78 0.19 280 / 0.45); border-radius: 9999px; font-family: var(--font-ui); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; transition: background-color 150ms ease, color 150ms ease; } .ds-chip-resting:hover { background: oklch(0.78 0.19 280 / 0.20); } .ds-chip-resting:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 2px; }"
     },
     {
-      "name": "Selected Chip",
+      "name": "Interactive Chip - Selected",
       "kind": "chip",
       "refersTo": "chip-selected",
       "description": "The selected state, always solid Violet rather than a gradient.",
@@ -240,7 +244,7 @@
       "css": ".ds-field { display: grid; gap: 10px; color: rgb(255 255 255 / 0.50); font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; } .ds-field input { width: 100%; background: transparent; color: var(--color-fg); padding: 0 0 10px; border: 0; border-bottom: 2px solid rgb(255 255 255 / 0.15); border-radius: 0; outline: 0; font-family: var(--font-body); font-size: 15px; font-weight: 400; letter-spacing: normal; transition: border-color 150ms ease; } .ds-field input:hover { border-bottom-color: rgb(255 255 255 / 0.30); } .ds-field input:focus-visible { border-bottom-color: var(--color-magenta); }"
     },
     {
-      "name": "Calendar Day",
+      "name": "Interactive Chip - Selected",
       "kind": "custom",
       "refersTo": "chip-selected",
       "description": "A 44px calendar cell showing default, hover, focus, and selected behavior.",
@@ -314,6 +318,14 @@
       {
         "name": "The One Icon Library Rule",
         "body": "Icons come from Lucide at 20px / 1.75 stroke. A second icon library is forbidden - mixing sets puts two optical grids and two stroke weights on one page. Icons are decorative; adjacent text carries the meaning, so every icon is aria-hidden."
+      },
+      {
+        "name": "The Colour Means Interactive Rule",
+        "body": "Chips split into two semantic families. Interactive chips carry Violet and a selected state; they are the only ones a user can act on. Static chips are read-only labels, monotone with a faint border so a long row reads as one texture rather than as buttons. Choose static (on black) or static-light (on the open-format field) by the surface, not by meaning. A static chip never gains a hover, focus, or selected state."
+      },
+      {
+        "name": "The Brand Mark Exception",
+        "body": "Lucide ships no brand icons, so third-party marks (Instagram) come from that brand's own guidelines rather than being redrawn in Lucide's style. Draw them at the same 20px / 1.75 stroke, and inline them: currentColor only inherits when the SVG is part of the document."
       }
     ],
     "dos": [
