@@ -90,20 +90,24 @@ public/brand/   logo, portrait, and the alpha-only portrait mask
 ## Git workflow
 
 **Never commit or push directly to `main`.** Every change — including one-line
-fixes and docs-only edits — goes through a branch and a pull request:
+fixes and docs-only edits — goes on a branch:
 
 ```bash
 git checkout main && git pull
 git checkout -b <type>/<short-description>
 # work, commit
 git push -u origin <branch>
-gh pr create
+# then stop and report
 ```
 
-Report the PR URL, not a pushed SHA. Do not merge the PR yourself unless asked;
-opening it is where the work ends. If you have already committed to a local
-`main` by mistake, move those commits onto a branch and reset `main` back to
-`origin/main` rather than pushing them.
+**Do not open the pull request automatically.** Push the branch, say what is on
+it, and wait to be asked. A PR notifies people and starts a review, and that
+timing belongs to the repo owner rather than to you. Pushing further commits to
+a branch that *already* has an open PR is fine — that updates an existing review
+rather than starting one. Never merge a PR yourself unless asked.
+
+If you have already committed to a local `main` by mistake, move those commits
+onto a branch and reset `main` back to `origin/main` rather than pushing them.
 
 ## Design documentation sync
 
