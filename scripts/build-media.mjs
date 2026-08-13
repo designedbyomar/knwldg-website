@@ -34,10 +34,11 @@ const OUT = "public/media";
 
 /**
  * Normalise anamorphic sources to square pixels at their true display size,
- * then cap the long edge at 1280. `-2` keeps dimensions even, which H.264
- * requires.
+ * then cap both the width and height while keeping the frame proportional.
+ * `-2` keeps dimensions even, which H.264 requires, and 720px remains the
+ * hard ceiling for the documented output height.
  */
-const SCALE = "scale=iw*sar:ih,setsar=1,scale='min(1280,iw)':-2";
+const SCALE = "scale=iw*sar:ih,setsar=1,scale='min(1280,iw)':'min(720,ih)':force_original_aspect_ratio=decrease,scale='trunc(iw/2)*2':'trunc(ih/2)*2'";
 
 /** Posters are pulled a beat into the trim, never frame 0 — cuts often open black. */
 const VIDEOS = [

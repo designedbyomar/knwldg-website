@@ -40,6 +40,9 @@ export function MediaStrip() {
   const reducedMotion = useReducedMotion();
   const coarse = useCoarsePointer();
   const [active, setActive] = useState<number | null>(null);
+  const hoverIndex = useRef<number | null>(null);
+  const focusIndex = useRef<number | null>(null);
+  const lastIntersectionRatio = useRef<Record<number, number>>({});
   // A Map keyed by gallery index, not an array. Only entries 0/2/4 are videos,
   // and a sparse array indexed that way mis-assigned the first tile: focusing
   // tile 0 played tile 2's clip. A Map has no holes to reason about.
@@ -60,6 +63,18 @@ export function MediaStrip() {
     }
   }, []);
 
+  const syncActive = useCallback(() => {
+    const nextIndex = hoverIndex.current ?? focusIndex.current;
+    if (nextIndex === null) {
+      setActive(null);
+      setPlaying(null);
+      return;
+    }
+
+    setActive(nextIndex);
+    setPlaying(nextIndex);
+  }, [setPlaying]);
+
   useEffect(() => {
     if (reducedMotion) {
       setPlaying(null);
@@ -73,18 +88,27 @@ export function MediaStrip() {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        let best: { index: number; ratio: number } | null = null;
         for (const entry of entries) {
           const index = Number((entry.target as HTMLElement).dataset.tile);
-          const ratio = entry.intersectionRatio;
-          if (entry.isIntersecting && ratio > 0.6 && (!best || ratio > best.ratio)) {
-            best = { index, ratio };
-          }
+          lastIntersectionRatio.current[index] = entry.isIntersecting ? entry.intersectionRatio : 0;
         }
-        if (best) {
-          setActive(best.index);
-          setPlaying(best.index);
+
+        const best = GALLERY.reduce<{ index: number; ratio: number } | null>((result, item, index) => {
+          if (item.kind !== "video") return result;
+          const ratio = lastIntersectionRatio.current[index] ?? 0;
+          if (ratio <= 0.6) return result;
+          if (!result || ratio > result.ratio) return { index, ratio };
+          return result;
+        }, null);
+
+        if (!best) {
+          setActive(null);
+          setPlaying(null);
+          return;
         }
+
+        setActive(best.index);
+        setPlaying(best.index);
       },
       { threshold: [0, 0.6, 0.9] }
     );
@@ -93,16 +117,25 @@ export function MediaStrip() {
     return () => observer.disconnect();
   }, [coarse, reducedMotion, setPlaying]);
 
-  const activate = (index: number) => {
+  const activate = (index: number, source: "hover" | "focus") => {
     if (reducedMotion || coarse) return;
-    setActive(index);
-    setPlaying(index);
+    if (source === "hover") {
+      hoverIndex.current = index;
+    } else {
+      focusIndex.current = index;
+    }
+    syncActive();
   };
 
-  const deactivate = () => {
+  const deactivate = (index: number, source: "hover" | "focus") => {
     if (reducedMotion || coarse) return;
-    setActive(null);
-    setPlaying(null);
+    if (source === "hover" && hoverIndex.current === index) {
+      hoverIndex.current = null;
+    }
+    if (source === "focus" && focusIndex.current === index) {
+      focusIndex.current = null;
+    }
+    syncActive();
   };
 
   return (
@@ -123,10 +156,10 @@ export function MediaStrip() {
             type="button"
             data-tile={i}
             aria-label={item.alt}
-            onMouseEnter={() => activate(i)}
-            onMouseLeave={deactivate}
-            onFocus={() => activate(i)}
-            onBlur={deactivate}
+            onMouseEnter={() => activate(i, "hover")}
+            onMouseLeave={() => deactivate(i, "hover")}
+            onFocus={() => activate(i, "focus")}
+            onBlur={() => deactivate(i, "focus")}
             style={{ zIndex: isActive ? GALLERY.length + 1 : i + 1 }}
             className={cn(
               "group relative aspect-3/4 w-[62%] shrink-0 snap-center overflow-hidden",
