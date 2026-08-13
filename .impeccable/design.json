@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-12T20:35:00Z",
+  "generatedAt": "2026-08-13T05:03:15Z",
   "title": "Design System: KNWLDG",
   "extensions": {
     "colorMeta": {
@@ -269,9 +269,9 @@
       "name": "Location Autocomplete",
       "kind": "input",
       "refersTo": "location-autocomplete",
-      "description": "An assisted venue, city, and address field with a square Black suggestion list, Violet active option, Geoapify attribution, and manual-entry fallback.",
-      "html": "<label class=\"ds-location\"><span>VENUE / CITY / ADDRESS</span><input value=\"The Society Room\"><div role=\"listbox\"><button role=\"option\" aria-selected=\"true\">THE SOCIETY ROOM OF HARTFORD<small>31 Pratt Street, Hartford, CT 06103</small></button><a href=\"https://www.geoapify.com/\">Powered by Geoapify</a></div></label>",
-      "css": ".ds-location { position: relative; display: grid; gap: 10px; color: rgb(255 255 255 / 0.50); font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.06em; } .ds-location input { background: transparent; color: var(--color-fg); padding: 0 0 10px; border: 0; border-bottom: 2px solid var(--color-magenta); border-radius: 0; font-family: var(--font-body); } .ds-location [role=listbox] { position: absolute; inset: 100% 0 auto; background: var(--color-bg); border: 1px solid rgb(255 255 255 / 0.15); border-radius: 0; box-shadow: 0 18px 60px rgb(0 0 0 / 0.65); } .ds-location [role=option] { width: 100%; padding: 12px 16px; background: var(--color-violet); color: var(--color-ink); border: 0; text-align: left; font-family: var(--font-ui); } .ds-location small { display: block; margin-top: 4px; opacity: 0.65; }"
+      "description": "An assisted venue, city, and address field with full-width helper copy, a square Black suggestion list, Violet active option, one compact OpenStreetMap and Geoapify credit, and manual-entry fallback.",
+      "html": "<label class=\"ds-location\"><span>VENUE / CITY / ADDRESS</span><input value=\"The Society Room\"><div role=\"listbox\"><button role=\"option\" aria-selected=\"true\">THE SOCIETY ROOM OF HARTFORD<small>31 Pratt Street, Hartford, CT 06103</small></button><div class=\"ds-location-credit\"><a href=\"https://www.openstreetmap.org/copyright\">© OpenStreetMap contributors</a><span>·</span><a href=\"https://www.geoapify.com/\">Powered by Geoapify</a></div></div><small class=\"ds-location-helper\">Start typing a venue, city, or address.</small></label>",
+      "css": ".ds-location { position: relative; display: grid; gap: 10px; color: rgb(255 255 255 / 0.50); font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.06em; } .ds-location input { background: transparent; color: var(--color-fg); padding: 0 0 10px; border: 0; border-bottom: 2px solid var(--color-magenta); border-radius: 0; font-family: var(--font-body); } .ds-location [role=listbox] { position: absolute; inset: 100% 0 auto; background: var(--color-bg); border: 1px solid rgb(255 255 255 / 0.15); border-radius: 0; box-shadow: 0 18px 60px rgb(0 0 0 / 0.65); } .ds-location [role=option] { width: 100%; padding: 12px 16px; background: var(--color-violet); color: var(--color-ink); border: 0; text-align: left; font-family: var(--font-ui); } .ds-location small { display: block; margin-top: 4px; opacity: 0.65; } .ds-location-credit { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 16px; font-size: 9px; letter-spacing: 0.04em; } .ds-location-credit a { color: inherit; } .ds-location-helper { width: 100%; font-size: 9px; letter-spacing: 0.04em; }"
     },
     {
       "name": "Underline Input",

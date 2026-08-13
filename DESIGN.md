@@ -91,6 +91,7 @@ components:
     textColor: "{colors.white}"
     activeBackgroundColor: "{colors.violet}"
     activeTextColor: "{colors.black}"
+    attribution: "© OpenStreetMap contributors · Powered by Geoapify"
     typography: "{typography.body}"
     rounded: "{rounded.square}"
 ---
@@ -225,7 +226,7 @@ A static chip never gains a hover, focus, or selected state. If a chip needs one
 - **Focus:** Magenta underline with a visible keyboard focus state.
 - **Error / Disabled:** Magenta message and underline for errors; submitting states disable the fieldset and reduce the action opacity.
 - **Date Picker:** The trigger matches the underlined fields. The floating calendar is Black with White hierarchy, Violet selection, Magenta focus, and Orchid for today. Past dates are visibly disabled.
-- **Location Autocomplete:** The venue field accepts cities, venue names, and full U.S. addresses. Its square Black listbox uses White hierarchy and a solid Violet active option, returns no more than six results, and is biased toward the Northeast without excluding other U.S. inquiries. Manual entry must remain available when Geoapify is missing or unavailable, and Geoapify attribution remains visible whenever the integration is active.
+- **Location Autocomplete:** The venue field accepts cities, venue names, and full U.S. addresses. Its square Black listbox uses White hierarchy and a solid Violet active option, returns no more than six results, and is biased toward the Northeast without excluding other U.S. inquiries. The helper copy spans the full field width. Manual entry must remain available when Geoapify is missing or unavailable. When suggestions are shown, one compact list footer credits both OpenStreetMap and Geoapify; never duplicate attribution below the field.
 
 ### Iconography
 

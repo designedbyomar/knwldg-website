@@ -97,6 +97,14 @@ describe("LocationAutocomplete interactions", () => {
     expect(screen.getByRole("status")).toHaveTextContent(
       "2 location suggestions available"
     );
+    expect(
+      screen.getByRole("link", { name: "© OpenStreetMap contributors" })
+    ).toHaveAttribute("href", "https://www.openstreetmap.org/copyright");
+    expect(screen.getByRole("link", { name: "Powered by Geoapify" })).toHaveAttribute(
+      "href",
+      "https://www.geoapify.com/"
+    );
+    expect(screen.getAllByRole("link")).toHaveLength(2);
     expect(input).toHaveAttribute("aria-expanded", "true");
 
     fireEvent.keyDown(input, { key: "ArrowDown" });
