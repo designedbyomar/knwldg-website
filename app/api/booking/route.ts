@@ -21,6 +21,7 @@ function formatBookingEmail(data: BookingFormValues): string {
     `Event type: ${data.eventType}`,
     `Event date: ${data.eventDate}`,
     data.venue ? `Venue / City: ${data.venue}` : null,
+    data.venuePlaceId ? `Geoapify place ID: ${data.venuePlaceId}` : null,
     data.guestCount ? `Guest count: ${data.guestCount}` : null,
     data.servicesNeeded ? `Services needed: ${data.servicesNeeded}` : null,
     data.budget ? `Budget: ${data.budget}` : null,

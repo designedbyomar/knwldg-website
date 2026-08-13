@@ -38,6 +38,7 @@ requires all three Resend variables.
 | `RESEND_API_KEY` | Production Resend API key. |
 | `BOOKING_FROM_EMAIL` | Required sender on the verified domain: `KNWLDG Bookings <bookings@djknwldg.com>`. |
 | `BOOKING_TO_EMAIL` | Required delivery inbox: `hello@djknwldg.com`. |
+| `NEXT_PUBLIC_GEOAPIFY_API_KEY` | Public, referrer-restricted Geoapify key used for venue, city, and address suggestions. Manual entry remains available when it is omitted or unavailable. |
 
 `.env*` is gitignored. Never commit real keys.
 
@@ -56,7 +57,11 @@ production infrastructure fails closed.
 2. Generate a private random `RATE_LIMIT_SALT` and add it to both environments.
 3. Verify `djknwldg.com` in Resend, create a production API key, and set the
    three booking email variables exactly as shown in `.env.example`.
-4. Redeploy, then submit one real inquiry and verify delivery and reply-to
+4. Create a free Geoapify project, restrict its generated API key to the
+   production, preview, and local HTTP referrers, then add it as
+   `NEXT_PUBLIC_GEOAPIFY_API_KEY`. The key is intentionally public in the
+   browser, so referrer restrictions are required.
+5. Redeploy, then submit one real inquiry and verify delivery and reply-to
    behavior before directing traffic to the site.
 
 ## Commands
