@@ -121,7 +121,13 @@ describe("POST /api/booking", () => {
   });
 
   it("sends a valid booking with the configured sender, recipient, and reply-to", async () => {
-    const response = await POST(jsonRequest(validSubmission));
+    const response = await POST(
+      jsonRequest({
+        ...validSubmission,
+        venue: "The Society Room of Hartford, 31 Pratt Street, Hartford, CT 06103",
+        venuePlaceId: "venue-1",
+      })
+    );
 
     expect(response.status).toBe(200);
     expect(mocks.sendEmail).toHaveBeenCalledOnce();
@@ -130,6 +136,7 @@ describe("POST /api/booking", () => {
         from: "KNWLDG Bookings <bookings@djknwldg.com>",
         to: "hello@djknwldg.com",
         replyTo: "guest@example.com",
+        text: expect.stringContaining("Geoapify place ID: venue-1"),
       })
     );
   });

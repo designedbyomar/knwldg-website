@@ -16,7 +16,8 @@ export const bookingSchema = z.object({
     .refine((value) => value >= getBusinessTodayIso(), {
       message: "Choose today or a future date",
     }),
-  venue: z.string().trim().max(160).optional().or(z.literal("")),
+  venue: z.string().trim().max(300).optional().or(z.literal("")),
+  venuePlaceId: z.string().trim().max(300).optional().or(z.literal("")),
   guestCount: z.string().trim().max(20).optional().or(z.literal("")),
   servicesNeeded: z.string().trim().max(300).optional().or(z.literal("")),
   budget: z.enum(budgetTuple).optional(),
