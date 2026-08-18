@@ -229,7 +229,7 @@
         "hover": "decided per event from pointerType; only pointerType === 'touch' is excluded",
         "focus": "never gated - keyboard reveal must work on every device",
         "scrollingWidths": "below --breakpoint-content an IntersectionObserver picks the most-visible tile, one video at a time; ties break on distance from the viewport centre",
-        "precedence": "a deliberate hover or focus outranks scroll position when both are live",
+        "precedence": "a deliberate hover or focus outranks scroll position when both are live; releasing it hands control back to the observer's last selection rather than clearing the strip, because releasing changes no intersection ratio and the observer would otherwise stay silent",
         "gateNote": "Never gate input on a media query here. (pointer: coarse) describes the primary pointer, so touch laptops, iPad in desktop mode and an open device toolbar lose hover entirely and fall through to an observer running against a non-scrolling row. (hover: hover) is a better guess but still a guess; the event is ground truth. The single remaining query asks about layout only.",
         "reducedMotion": "poster only, never autoplay, no active scale - but the colour reveal still resolves"
       },

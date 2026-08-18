@@ -98,6 +98,25 @@ export function videoToPlay(
   return GALLERY[active]?.kind === "video" ? active : null;
 }
 
+/**
+ * Which tile is active once both inputs are considered.
+ *
+ * A pointed tile always wins. The fallback is the part that matters: releasing
+ * a hover changes no intersection ratio, so the observer has nothing to report
+ * and stays silent. Returning null there stranded the centred tile in the
+ * duotone with its video paused until the next threshold crossing - which in a
+ * snap scroller can mean until the reader scrolls to another tile entirely.
+ */
+export function resolveActive(
+  pointed: number | null,
+  scrolls: boolean,
+  ratios: Readonly<Record<number, number>>,
+  centreDistance: Readonly<Record<number, number>>
+): number | null {
+  if (pointed !== null) return pointed;
+  return scrolls ? selectMostVisibleTile(ratios, centreDistance) : null;
+}
+
 export function MediaStrip() {
   const reducedMotion = useReducedMotion();
   // Only one media query left, and it asks about layout, not input. Whether a
@@ -130,10 +149,15 @@ export function MediaStrip() {
   }, []);
 
   const syncActive = useCallback(() => {
-    const nextIndex = hoverIndex.current ?? focusIndex.current;
+    const nextIndex = resolveActive(
+      hoverIndex.current ?? focusIndex.current,
+      scrolls,
+      lastIntersectionRatio.current,
+      lastCentreDistance.current
+    );
     setActive(nextIndex);
     setPlaying(videoToPlay(nextIndex, Boolean(reducedMotion)));
-  }, [reducedMotion, setPlaying]);
+  }, [reducedMotion, scrolls, setPlaying]);
 
   useEffect(() => {
     // Only while the strip is actually a scroller. Above the content breakpoint

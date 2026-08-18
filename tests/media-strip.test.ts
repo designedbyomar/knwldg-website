@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { selectMostVisibleTile, videoToPlay } from "@/components/sections/media-strip";
+import {
+  resolveActive,
+  selectMostVisibleTile,
+  videoToPlay,
+} from "@/components/sections/media-strip";
 
 /**
  * GALLERY alternates video and still, so indices 0/2/4 are videos and 1/3 are
@@ -39,6 +43,35 @@ describe("coarse-pointer tile selection", () => {
 
   it("falls back to the first qualifying tile when no distances are supplied", () => {
     expect(selectMostVisibleTile({ 0: 1, 1: 1, 2: 1 })).toBe(0);
+  });
+});
+
+describe("resolving the active tile from both inputs", () => {
+  // Centred tile 2, with tile 1 partly visible beside it.
+  const ratios = { 1: 0.7, 2: 1 };
+  const distances = { 1: 300, 2: 20 };
+
+  it("gives a pointed tile precedence over the scroll selection", () => {
+    expect(resolveActive(1, true, ratios, distances)).toBe(1);
+  });
+
+  // The regression: releasing a hover changes no intersection ratio, so the
+  // observer never speaks again. Returning null here left the centred tile in
+  // the duotone with its video paused until the next threshold crossing.
+  it("falls back to the most-visible tile when a hover or focus ends", () => {
+    expect(resolveActive(null, true, ratios, distances)).toBe(2);
+  });
+
+  it("clears the active tile on exit where the strip does not scroll", () => {
+    expect(resolveActive(null, false, ratios, distances)).toBeNull();
+  });
+
+  it("clears the active tile on exit when nothing is sufficiently visible", () => {
+    expect(resolveActive(null, true, { 1: 0.2 }, { 1: 40 })).toBeNull();
+  });
+
+  it("keeps a pointed tile even when the observer has reported nothing", () => {
+    expect(resolveActive(3, true, {}, {})).toBe(3);
   });
 });
 
