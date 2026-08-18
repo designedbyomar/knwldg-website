@@ -279,7 +279,9 @@ The capabilities gallery is a strip of overlapping tiles — five `3:4` surfaces
 
 It also earns the one shadow the **Flat Until Floating Rule** allows outside the calendar popover. Each tile casts left onto the tile it covers (`-14px 0 24px -8px, black at 90%`). Without it the overlap is geometrically correct and visually invisible: five dark tiles read as one flat band.
 
-**Filter — brand duotone at rest, true colour on contact.** Media rests fully desaturated (`grayscale(1) contrast(1.08)`) under the brand gradient at `mix-blend-mode: color`, `opacity 0.85`. On hover, focus, or playback the media returns to `grayscale(0)` and the overlay fades to `0`, so the tile snaps from brand monochrome to its real colour as it plays — the light-rig idea the hero runs on, applied to stills.
+**Filter — brand duotone at rest, true colour on contact.** Media rests fully desaturated (`grayscale(1) contrast(0.92) brightness(0.88)`) under the brand gradient at `mix-blend-mode: color`, `opacity 0.85`. On hover, focus, or when the tile is the most visible one in view, the media returns to `grayscale(0) contrast(1)` and the overlay fades to `0`, so the tile snaps from brand monochrome to its real colour — the light-rig idea the hero runs on, applied to stills.
+
+**The rest filter compresses luminance on purpose.** Every ramp stop is `oklch(0.78 0.19 H)`, so a brand hue only exists around **L 0.78** — sRGB has no colour that is both bright and saturated. `color` blending drives the source to the backdrop's luminosity, and when that exceeds the gamut the spec's `ClipColor` desaturates the result toward grey. Left at full range, a highlight such as a white shirt under stage light retains about **5%** of the ramp's chroma: it clips to a flat blown-out patch with hard banding. Pulling highlights toward the ramp's own lightness lifts that to roughly **65%**, while midtones — which never clipped — are left untouched. **Raising contrast here brings the posterisation straight back.**
 
 `color` is the load-bearing choice, not `soft-light` or `overlay`: it takes hue and saturation from the overlay and **luminance from the frame beneath**, which recolours the image along the ramp instead of washing over it. It only works because the media is fully desaturated first — any surviving hue fights the mapping. Because the gradient runs diagonally across the whole strip, each tile lands on a different part of the ramp, so the row reads blue through violet to magenta left to right.
 
@@ -287,12 +289,20 @@ This also does real work on inconsistent sources: the set ranges from a 720×480
 
 **No captions.** Tiles carry no visible label. The imagery speaks, and five labels across an overlapping row competed with the section heading. Each tile is still a button with an `aria-label` describing the shot, so the accessible name survives.
 
-**Playback.**
+**Colour and playback are two questions, not one.**
+
+*Which tile shows colour* — whichever is most visible, **image or video**. Where the strip scrolls there is often no hover to rely on, so this is the only thing that lifts the duotone. Deriving it from playback instead left photographs tinted permanently, because an image can never be the clip that plays.
+
+*Which video plays* — a strict subset of the above: videos only, one at a time, never under reduced motion. When an image becomes the active tile, playback stops.
 
 - Every clip is `muted`, `loop`, `playsInline`, `preload="none"`, and carries a poster. Nothing downloads until it is wanted.
-- Fine pointer: plays on hover **and focus**. Tiles are real buttons — hover-only playback is unreachable by keyboard.
-- Coarse pointer: an `IntersectionObserver` plays the most-visible clip, **one at a time**. Three simultaneous decodes is the workload phones handle worst.
-- Reduced motion: nothing autoplays; the poster stands in.
+- Hover is decided **per event**, from `pointerType` on the pointer event, not from a media query. Touch synthesises enter/leave on tap and that is the only thing worth suppressing, so `pointerType === "touch"` is excluded and every other input — mouse, trackpad, pen — works.
+- Focus is **never** gated. Tiles are real buttons; hover-only playback is unreachable by keyboard.
+- Below the `content` breakpoint, where the strip is a snap scroller, an `IntersectionObserver` selects the most-visible tile and plays it **only if it is a video**. Three simultaneous decodes is the workload phones handle worst.
+- **Never gate input on a media query here.** Branching on `(pointer: coarse)` was a bug: it describes the device's *primary* pointer, so a touch laptop, an iPad in desktop mode, or an open device toolbar reported coarse, lost hover entirely, and fell through to an observer running against a row that does not scroll — where every tile is equally visible and one stays lit permanently. `(hover: hover)` is a better guess but still a guess about the device; the event itself is ground truth. The one query that remains asks about **layout**, which is the only thing a media query is actually authoritative on.
+- Ties are broken by distance from the viewport centre. With a strict "more visible than" comparison, equally visible tiles never displace the incumbent, which is what pinned the first tile.
+- A deliberate hover or focus outranks scroll position when both paths are live at once.
+- Reduced motion: colour still reveals, but nothing autoplays and the active tile does not scale. A cross-fade is not a vestibular trigger; suppressing it left the strip permanently grey for anyone with the preference set.
 
 **Assets.** `public/media/` is generated by `node scripts/build-media.mjs` from masters that are gitignored. Clips are ≤10s, 720p, audio stripped, `+faststart`. A fresh clone cannot regenerate them without the masters.
 
