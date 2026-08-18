@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  measureGeometry,
   resolveActive,
   selectMostVisibleTile,
   videoToPlay,
@@ -10,7 +11,7 @@ import {
  * GALLERY alternates video and still, so indices 0/2/4 are videos and 1/3 are
  * images. These tests lean on that shape.
  */
-describe("coarse-pointer tile selection", () => {
+describe("tile selection", () => {
   it("returns no active tile when every one is below the visibility threshold", () => {
     expect(selectMostVisibleTile({ 0: 0.6, 2: 0.2, 4: 0 })).toBeNull();
   });
@@ -43,6 +44,62 @@ describe("coarse-pointer tile selection", () => {
 
   it("falls back to the first qualifying tile when no distances are supplied", () => {
     expect(selectMostVisibleTile({ 0: 1, 1: 1, 2: 1 })).toBe(0);
+  });
+});
+
+/**
+ * The exit path measures the strip live rather than reusing the observer's last
+ * snapshot, because the observer only reports on a threshold crossing. A rect
+ * here is viewport-relative, exactly as getBoundingClientRect returns it.
+ */
+describe("measuring tile geometry", () => {
+  const viewport = { width: 400, height: 800 };
+  const rect = (left: number, width = 200) => ({
+    left,
+    right: left + width,
+    top: 0,
+    bottom: 300,
+    width,
+    height: 300,
+  });
+
+  it("reports a fully visible tile as wholly visible", () => {
+    const { ratios } = measureGeometry({ 0: rect(100) }, viewport);
+    expect(ratios[0]).toBe(1);
+  });
+
+  it("reports the visible fraction of a tile hanging off the left edge", () => {
+    const { ratios } = measureGeometry({ 0: rect(-100) }, viewport);
+    expect(ratios[0]).toBeCloseTo(0.5);
+  });
+
+  it("reports a tile scrolled entirely off screen as invisible", () => {
+    const { ratios } = measureGeometry({ 0: rect(500) }, viewport);
+    expect(ratios[0]).toBe(0);
+  });
+
+  it("measures centre offset against the viewport centre", () => {
+    // Tile spans 100-300, centre 200, which is the viewport centre.
+    const { centreDistance } = measureGeometry({ 0: rect(100) }, viewport);
+    expect(centreDistance[0]).toBe(0);
+  });
+
+  it("does not divide by zero on a collapsed tile", () => {
+    const collapsed = { left: 0, right: 0, top: 0, bottom: 0, width: 0, height: 0 };
+    const { ratios } = measureGeometry({ 0: collapsed }, viewport);
+    expect(ratios[0]).toBe(0);
+    expect(Number.isNaN(ratios[0])).toBe(false);
+  });
+
+  // The regression: scrolling while a tile is held moves the strip without
+  // crossing a threshold, so the observer's cache still names the old tile.
+  // Measuring live is what makes the release pick the tile actually centred.
+  it("picks the newly centred tile from live geometry, not a stale snapshot", () => {
+    const stale = { ratios: { 1: 1, 2: 0.7 }, centreDistance: { 1: 0, 2: 220 } };
+    const live = measureGeometry({ 1: rect(-140), 2: rect(110) }, viewport);
+
+    expect(selectMostVisibleTile(stale.ratios, stale.centreDistance)).toBe(1);
+    expect(selectMostVisibleTile(live.ratios, live.centreDistance)).toBe(2);
   });
 });
 

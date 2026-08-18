@@ -98,6 +98,51 @@ export function videoToPlay(
   return GALLERY[active]?.kind === "video" ? active : null;
 }
 
+/** The parts of a DOMRect this needs, so the maths is testable without a DOM. */
+export type TileRect = Pick<
+  DOMRect,
+  "left" | "right" | "top" | "bottom" | "width" | "height"
+>;
+
+/**
+ * Visibility ratio and centre offset for a set of tiles, in the same terms an
+ * IntersectionObserver reports against the viewport with no root margin.
+ *
+ * This exists so the exit path can measure the strip *now* rather than trust
+ * the observer's last snapshot. The observer only speaks on a threshold
+ * crossing, so any scrolling in between leaves its cache describing a position
+ * the strip has already left.
+ */
+export function measureGeometry(
+  rects: Readonly<Record<number, TileRect>>,
+  viewport: { width: number; height: number }
+): { ratios: Record<number, number>; centreDistance: Record<number, number> } {
+  const ratios: Record<number, number> = {};
+  const centreDistance: Record<number, number> = {};
+
+  for (const [key, rect] of Object.entries(rects)) {
+    const index = Number(key);
+    const visibleWidth = Math.max(
+      0,
+      Math.min(rect.right, viewport.width) - Math.max(rect.left, 0)
+    );
+    const visibleHeight = Math.max(
+      0,
+      Math.min(rect.bottom, viewport.height) - Math.max(rect.top, 0)
+    );
+    const area = rect.width * rect.height;
+
+    // A collapsed tile has no area to be a fraction of; guard the divide rather
+    // than letting NaN through into the comparison.
+    ratios[index] = area > 0 ? (visibleWidth * visibleHeight) / area : 0;
+    centreDistance[index] = Math.abs(
+      rect.left + rect.width / 2 - viewport.width / 2
+    );
+  }
+
+  return { ratios, centreDistance };
+}
+
 /**
  * Which tile is active once both inputs are considered.
  *
@@ -148,16 +193,41 @@ export function MediaStrip() {
     }
   }, []);
 
+  /** Reads the strip's current geometry. Only called on release, never on scroll. */
+  const measureNow = useCallback(() => {
+    const nodes = containerRef.current?.querySelectorAll<HTMLElement>("[data-tile]");
+    if (!nodes?.length) return null;
+
+    const rects: Record<number, TileRect> = {};
+    nodes.forEach((node) => {
+      rects[Number(node.dataset.tile)] = node.getBoundingClientRect();
+    });
+
+    return measureGeometry(rects, {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+  }, []);
+
   const syncActive = useCallback(() => {
+    const pointed = hoverIndex.current ?? focusIndex.current;
+
+    // Measure at the moment of the decision. The observer's cache only refreshes
+    // on a threshold crossing, so scrolling while a tile is held leaves it
+    // describing where the strip was - releasing then revealed the wrong tile
+    // until the next crossing. Layout is only forced here, on release, never on
+    // the scroll path, where the observer's own entries are already exact.
+    const geometry = pointed === null && scrolls ? measureNow() : null;
+
     const nextIndex = resolveActive(
-      hoverIndex.current ?? focusIndex.current,
+      pointed,
       scrolls,
-      lastIntersectionRatio.current,
-      lastCentreDistance.current
+      geometry?.ratios ?? {},
+      geometry?.centreDistance ?? {}
     );
     setActive(nextIndex);
     setPlaying(videoToPlay(nextIndex, Boolean(reducedMotion)));
-  }, [reducedMotion, scrolls, setPlaying]);
+  }, [measureNow, reducedMotion, scrolls, setPlaying]);
 
   useEffect(() => {
     // Only while the strip is actually a scroller. Above the content breakpoint
