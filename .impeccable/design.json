@@ -204,8 +204,10 @@
     "mediaMeta": {
       "overlapPx": 28,
       "aspect": "3/4",
-      "restFilter": "grayscale(1) contrast(1.08)",
+      "restFilter": "grayscale(1) contrast(0.92) brightness(0.88)",
       "activeFilter": "grayscale(0) contrast(1)",
+      "restFilterNote": "Compresses luminance toward the ramp's own L 0.78. sRGB has no bright-and-saturated colour, so under mix-blend-mode: color the spec's ClipColor desaturates highlights toward grey - at full range a white shirt kept only ~5% of the ramp's chroma and clipped to a flat patch. Raising contrast here reintroduces the posterisation.",
+      "activeSelection": "most visible tile of any kind, image or video",
       "tintOverlay": {
         "gradient": "brand-gradient-diagonal",
         "blendMode": "color",
@@ -224,9 +226,13 @@
         "maxHeight": 720
       },
       "playback": {
-        "finePointer": "hover and focus",
-        "coarsePointer": "most-visible, one at a time",
-        "reducedMotion": "poster only, never autoplay"
+        "hover": "decided per event from pointerType; only pointerType === 'touch' is excluded",
+        "focus": "never gated - keyboard reveal must work on every device",
+        "scrollingWidths": "below --breakpoint-content an IntersectionObserver picks the most-visible tile, one video at a time; ties break on distance from the viewport centre",
+        "precedence": "a deliberate hover or focus outranks scroll position when both are live; releasing it hands control back rather than clearing the strip, because releasing changes no intersection ratio and the observer would otherwise stay silent",
+        "releaseMeasurement": "on release the strip is measured live, not read from the observer's last snapshot - the observer only reports on a threshold crossing, so scrolling while a tile is held would otherwise hand back to whichever tile used to be centred. Layout is read only on release, never on the scroll path.",
+        "gateNote": "Never gate input on a media query here. (pointer: coarse) describes the primary pointer, so touch laptops, iPad in desktop mode and an open device toolbar lose hover entirely and fall through to an observer running against a non-scrolling row. (hover: hover) is a better guess but still a guess; the event is ground truth. The single remaining query asks about layout only.",
+        "reducedMotion": "poster only, never autoplay, no active scale - but the colour reveal still resolves"
       },
       "pipeline": "node scripts/build-media.mjs (masters gitignored)",
       "captions": "none; each tile is a button with an aria-label"

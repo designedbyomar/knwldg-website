@@ -242,13 +242,17 @@
   .media-tile.is-active { z-index: 9; transform: scale(1.04);
     box-shadow: 0 0 40px -4px rgb(0 0 0 / 0.95); }
   /* Stand-in for a photograph: a grey field so the duotone overlay has real
-     luminance to recolour, exactly as it would over a desaturated frame. */
+     luminance to recolour, exactly as it would over a desaturated frame. The
+     near-white band is deliberate - it is the highlight case that clips, and the
+     rest filter below is what keeps it from blowing out. */
   .media-tile::before { content: ""; position: absolute; inset: 0;
-    background: repeating-linear-gradient(150deg, #2a2a2a, #2a2a2a 14px, #4a4a4a 14px, #4a4a4a 28px); }
+    background: repeating-linear-gradient(150deg, #2a2a2a, #2a2a2a 14px, #4a4a4a 14px, #4a4a4a 28px, #f2f2f2 28px, #f2f2f2 36px);
+    filter: grayscale(1) contrast(0.92) brightness(0.88); }
   .media-tile::after { content: ""; position: absolute; inset: 0;
     background: var(--brand-gradient-diagonal); mix-blend-mode: color; opacity: 0.85; }
   .media-tile.is-active::after { opacity: 0; }
-  .media-tile.is-active::before { background: repeating-linear-gradient(150deg, #3a1f4d, #3a1f4d 14px, #7a3f6d 14px, #7a3f6d 28px); }
+  .media-tile.is-active::before { filter: grayscale(0) contrast(1);
+    background: repeating-linear-gradient(150deg, #3a1f4d, #3a1f4d 14px, #7a3f6d 14px, #7a3f6d 28px, #f2d8ef 28px, #f2d8ef 36px); }
 
   .icon-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
   .icon-spec { background: var(--color-bg); padding: 20px 16px; }
@@ -814,9 +818,15 @@
         <div class="media-tile"></div>
         <div class="media-tile"></div>
       </div>
-      <p style="font-size: 11px; color: var(--fg-faint); font-family: 'KD Code', monospace; margin: 10px 0 0;">third tile shown active &middot; overlap 28px &middot; rest: grayscale(1) + brand gradient at mix-blend-mode: color, 0.85</p>
+      <p style="font-size: 11px; color: var(--fg-faint); font-family: 'KD Code', monospace; margin: 10px 0 0;">third tile shown active &middot; overlap 28px &middot; rest: grayscale(1) contrast(0.92) brightness(0.88) + brand gradient at mix-blend-mode: color, 0.85</p>
 
-      <p style="font-size: 13px; color: var(--fg-dim); margin: 20px 0 0; max-width: 74ch;"><b style="color: var(--color-fg);">Filter.</b> Rests fully desaturated (<code>grayscale(1)</code>) under the brand gradient at <code>mix-blend-mode: color</code>, <code>opacity 0.85</code>, which takes hue from the overlay and luminance from the frame beneath &mdash; a true duotone rather than a wash. On hover, focus or playback the media returns to <code>grayscale(0)</code> and the overlay fades to <code>0</code>, snapping the tile to its real colour. Tiles carry no visible caption; each is a button with an <code>aria-label</code>. <b style="color: var(--color-fg);">Playback.</b> Every clip is muted, looping, <code>playsInline</code>, <code>preload="none"</code> with a poster. Fine pointer plays on hover <i>and focus</i>, because hover-only playback is unreachable by keyboard. Coarse pointer plays the most-visible clip, one at a time. Reduced motion never autoplays &mdash; the poster stands in.</p>
+      <p style="font-size: 13px; color: var(--fg-dim); margin: 20px 0 0; max-width: 74ch;"><b style="color: var(--color-fg);">Filter.</b> Rests fully desaturated (<code>grayscale(1) contrast(0.92) brightness(0.88)</code>) under the brand gradient at <code>mix-blend-mode: color</code>, <code>opacity 0.85</code>, which takes hue from the overlay and luminance from the frame beneath &mdash; a true duotone rather than a wash. When the tile is hovered, focused, or is the most visible one in view, the media returns to <code>grayscale(0) contrast(1)</code> and the overlay fades to <code>0</code>, snapping it to real colour. Tiles carry no visible caption; each is a button with an <code>aria-label</code>.</p>
+
+      <p style="font-size: 13px; color: var(--fg-dim); margin: 14px 0 0; max-width: 74ch;"><b style="color: var(--color-fg);">Why the rest filter lowers contrast.</b> Every ramp stop is <code>oklch(0.78 0.19 H)</code>, so a brand hue only exists near <b style="color: var(--color-fg);">L 0.78</b> &mdash; sRGB has no colour that is both bright and saturated. <code>color</code> blending drives the source to the backdrop's luminosity, and where that leaves the gamut the spec's <code>ClipColor</code> desaturates toward grey. At full range a highlight keeps only about <b style="color: var(--color-fg);">5%</b> of the ramp's chroma and clips to a flat patch; compressing toward the ramp's own lightness restores roughly <b style="color: var(--color-fg);">65%</b>, leaving midtones untouched. Raising contrast here brings the posterisation straight back.</p>
+
+      <p style="font-size: 13px; color: var(--fg-dim); margin: 14px 0 0; max-width: 74ch;"><b style="color: var(--color-fg);">Colour and playback are separate questions.</b> The tile showing colour is whichever is most visible &mdash; <i>image or video</i>. Where the strip scrolls there is often no hover to rely on, so this is the only thing that lifts the duotone; deriving it from playback left photographs tinted permanently. Playback is a strict subset: videos only, one at a time, and stopped when an image becomes active. Every clip is muted, looping, <code>playsInline</code>, <code>preload="none"</code> with a poster. Hover is decided per event from <code>pointerType</code>, and focus is never gated, because hover-only playback is unreachable by keyboard. Reduced motion still reveals colour but never autoplays and drops the active tile's scale &mdash; a cross-fade is not a vestibular trigger.</p>
+
+      <p style="font-size: 13px; color: var(--fg-dim); margin: 14px 0 0; max-width: 74ch;"><b style="color: var(--color-fg);">Never gate input on a media query here.</b> Hover is read per event from <code>pointerType</code>, excluding only <code>touch</code>; the <code>IntersectionObserver</code> is gated on being below <code>--breakpoint-content</code>, where the strip is actually a snap scroller. Branching input on <code>(pointer: coarse)</code> was a bug &mdash; that query describes the device's <i>primary</i> pointer, so a touch laptop, an iPad in desktop mode, or an open device toolbar reported coarse, <b style="color: var(--color-fg);">lost hover entirely</b>, and fell through to an observer running against a row where every tile is equally visible and one stays lit permanently. <code>(hover: hover)</code> is a better guess but still a guess about the device; the event is ground truth. The one query left asks about <b style="color: var(--color-fg);">layout</b>, which is all a media query is authoritative on. Ties break on distance from the viewport centre, and a deliberate hover outranks scroll position &mdash; then hands control back on release, because letting go changes no intersection ratio and the observer would otherwise stay silent, stranding the centred tile in the duotone. That handover <b style="color: var(--color-fg);">re-measures the strip</b> rather than reusing the observer's last snapshot &mdash; scrolling while a tile is held moves the strip without crossing a threshold, so a cached position would reveal whichever tile used to be centred. Layout is read only on release, never on the scroll path.</p>
     </section>
 
     <section class="doc" id="motion">
