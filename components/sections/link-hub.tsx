@@ -40,43 +40,54 @@ export function LinkHub() {
   const PrimaryIcon = LINK_HUB.primary.icon;
 
   return (
-    <section className="relative isolate min-h-dvh overflow-hidden bg-bg px-5 pt-12 pb-14">
+    <section className="relative isolate min-h-dvh overflow-hidden bg-bg px-5 pt-6 pb-12">
       <div
         aria-hidden
-        className="absolute inset-x-0 top-0 h-[420px]"
+        className="absolute inset-x-0 top-0 h-[360px]"
         style={WASH}
       />
 
       <div className="relative mx-auto flex w-full max-w-[26rem] flex-col">
-        <Image
-          src={MARK_SRC}
-          alt="KNWLDG"
-          width={820}
-          height={410}
-          priority
-          className="mx-auto h-auto w-[190px]"
-        />
+        {/* The homepage framing: the mark runs wider than the column and he
+            stands in front of it. It is absolutely positioned so it contributes
+            no height of its own - the portrait alone sets the block's height,
+            which is what lets the copy sit close underneath. */}
+        <div className="relative">
+          <Image
+            src={MARK_SRC}
+            alt="KNWLDG"
+            width={820}
+            height={410}
+            priority
+            className="absolute top-[8%] left-1/2 z-0 h-auto w-[min(520px,124%)] -translate-x-1/2 opacity-90"
+          />
 
-        <Image
-          src={PHOTO_SRC}
-          alt=""
-          width={1253}
-          height={1474}
-          priority
-          // Same dissolve the hero uses, from the same constants. The portrait
-          // has to reach true black before the tagline, or the copy lands on a
-          // shirt instead of on the page ground.
-          style={{
-            WebkitMaskImage: PORTRAIT_FADE_MASK,
-            maskImage: PORTRAIT_FADE_MASK,
-          }}
-          className="mx-auto -mt-2 h-auto w-[236px]"
-        />
+          <Image
+            src={PHOTO_SRC}
+            alt=""
+            width={1253}
+            height={1474}
+            priority
+            // Same dissolve the hero uses, from the same constants. The portrait
+            // has to reach true black before the two copy lines, or they land on
+            // a shirt instead of on the page ground. Below it the mark keeps
+            // showing through, exactly as it does on the homepage.
+            style={{
+              WebkitMaskImage: PORTRAIT_FADE_MASK,
+              maskImage: PORTRAIT_FADE_MASK,
+            }}
+            className="relative z-10 mx-auto h-auto w-[clamp(220px,64vw,286px)]"
+          />
+        </div>
 
         <p
           className={`-mt-6 text-center ${LABEL} text-[11px] leading-relaxed text-balance text-fg/70`}
         >
           {LINK_HUB.tagline}
+        </p>
+
+        <p className="mt-2 text-center font-ui text-[11px] leading-relaxed text-balance text-fg/60">
+          {LINK_HUB.services}
         </p>
 
         <nav
@@ -118,10 +129,6 @@ export function LinkHub() {
             ),
           )}
         </nav>
-
-        <p className="mt-8 text-center font-ui text-[11px] leading-relaxed text-balance text-fg/60">
-          {LINK_HUB.footnote}
-        </p>
       </div>
     </section>
   );

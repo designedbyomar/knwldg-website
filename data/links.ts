@@ -44,7 +44,7 @@ export type LinkRow = {
 
 export const LINK_HUB = {
   tagline: "Open-Format DJ · Connecticut · NYC Metro · Northeast",
-  footnote:
+  services:
     "Weddings, corporate events, festivals, private events, and nightlife.",
   primary: {
     label: "Book KNWLDG",
