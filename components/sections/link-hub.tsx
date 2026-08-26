@@ -64,7 +64,7 @@ export function LinkHub() {
           height={1474}
           priority
           // Same dissolve the hero uses, from the same constants. The portrait
-          // has to reach true black before the tagline, or the copy lands on a
+          // has to reach true black before the two copy lines, or they land on a
           // shirt instead of on the page ground.
           style={{
             WebkitMaskImage: PORTRAIT_FADE_MASK,
@@ -77,6 +77,10 @@ export function LinkHub() {
           className={`-mt-6 text-center ${LABEL} text-[11px] leading-relaxed text-balance text-fg/70`}
         >
           {LINK_HUB.tagline}
+        </p>
+
+        <p className="mt-2 text-center font-ui text-[11px] leading-relaxed text-balance text-fg/60">
+          {LINK_HUB.services}
         </p>
 
         <nav
@@ -118,10 +122,6 @@ export function LinkHub() {
             ),
           )}
         </nav>
-
-        <p className="mt-8 text-center font-ui text-[11px] leading-relaxed text-balance text-fg/60">
-          {LINK_HUB.footnote}
-        </p>
       </div>
     </section>
   );
