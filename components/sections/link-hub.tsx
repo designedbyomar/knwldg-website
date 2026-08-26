@@ -59,7 +59,7 @@ export function LinkHub() {
             width={820}
             height={410}
             priority
-            className="absolute top-[18%] left-1/2 z-0 h-auto w-[min(520px,124%)] -translate-x-1/2 opacity-90"
+            className="absolute top-[8%] left-1/2 z-0 h-auto w-[min(520px,124%)] -translate-x-1/2 opacity-90"
           />
 
           <Image
