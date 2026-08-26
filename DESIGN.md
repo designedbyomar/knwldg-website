@@ -344,6 +344,7 @@ Each action uses uppercase Sora, a Violet Lucide icon at the shared `20px` / `1.
 - **Modules stay pure Black on White** — on the plain code and inside the branded card alike. Every ramp stop is `oklch(0.78 0.19 H)`, roughly 2.5:1 on White, far below what a phone camera needs to decode. Brand colour goes around the code, never in it.
 - **No logo is punched into the centre**, so error correction stays at level **M** and the modules stay coarse. Fewer, larger modules read from further away.
 - **The 4-module quiet zone is part of the spec, not padding.** Cropping it is the most common way a printed code stops scanning.
+- **The outputs are one set, regenerated together or not at all.** A run that cannot render the branded card deletes it and fails rather than leaving one that still points at the old URL beside plain codes pointing at the new one. `public/qr/manifest.json` records the payload and a digest of each file, which is how a stale card is caught in CI — a screenshot cannot be checked by regenerating and comparing bytes.
 
 ### Open-Format Field
 

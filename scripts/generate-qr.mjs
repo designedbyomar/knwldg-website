@@ -22,9 +22,21 @@
  *   the most common way a printed code stops scanning.
  * - The card is HTML rendered in headless Chrome (scripts/qr-card.html) rather
  *   than composed here, because that is what gets it real Anton and Sora.
+ * - **The three outputs are one set, regenerated together or not at all.** A
+ *   run that cannot render the card deletes the stale one and fails loudly
+ *   rather than leaving a card that still points at the old URL beside a plain
+ *   code that points at the new one - the plain code would pass every check
+ *   while the printed card sent people somewhere else.
+ * - **manifest.json records the payload and a digest of each file**, written
+ *   only once all three exist. It is what lets tests/links-page.test.tsx prove
+ *   the committed card belongs to the committed URL: a PNG cannot be compared
+ *   by regenerating it, because Chrome does not render byte-identically across
+ *   versions.
  */
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import {
+  existsSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -32,7 +44,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import QRCode from "qrcode";
 
@@ -56,6 +68,17 @@ export const QR_OPTIONS = {
 };
 
 const CARD = { width: 1080, height: 1350, scale: 2 };
+
+/**
+ * Ties the committed artwork to the URL it was generated from. The card is a
+ * screenshot, so it cannot be checked by regenerating and comparing bytes -
+ * Chrome does not render identically across versions. A digest recorded at
+ * generation time is what makes a stale card detectable in CI.
+ */
+export const MANIFEST_NAME = "manifest.json";
+
+const digest = (file) =>
+  createHash("sha256").update(readFileSync(file)).digest("hex");
 
 const CHROME_CANDIDATES = [
   process.env.CHROME_PATH,
@@ -86,22 +109,29 @@ function findChrome() {
       execFileSync(candidate, ["--version"], { stdio: "ignore" });
       return candidate;
     } catch {
-      // Try the next one. Chrome is only needed for the card.
+      // Try the next one.
     }
   }
   return null;
 }
 
 /**
- * Renders the branded card. Returns false rather than throwing when no Chrome
- * is installed: the plain code is the load-bearing artefact, and a machine
- * without a browser should still be able to regenerate it.
+ * Renders the branded card.
+ *
+ * A missing browser throws rather than skipping. Skipping looked harmless and
+ * was the one genuinely dangerous outcome: the SVG and PNG ahead of it have
+ * already been rewritten, so a silent skip leaves a card encoding the previous
+ * URL next to plain codes encoding the new one, and the only artefact anyone
+ * prints large is the card.
  */
-async function renderCard(url, outFile, log) {
+async function renderCard(url, outFile) {
   const chrome = findChrome();
   if (!chrome) {
-    log(`  card    skipped - no Chrome found (set CHROME_PATH)`);
-    return false;
+    throw new Error(
+      "No Chrome found, so the branded card cannot be rendered. Install Google " +
+        "Chrome or point CHROME_PATH at a Chromium binary, then re-run - the " +
+        "three outputs have to be regenerated together.",
+    );
   }
 
   const qrSvg = await QRCode.toString(url, {
@@ -140,7 +170,10 @@ async function renderCard(url, outFile, log) {
       ],
       { stdio: "ignore" },
     );
-    return true;
+
+    if (!existsSync(outFile)) {
+      throw new Error(`Chrome exited without writing ${outFile}`);
+    }
   } finally {
     rmSync(stage, { recursive: true, force: true });
   }
@@ -170,10 +203,38 @@ export async function generateQr({ outDir = OUT_DIR, quiet = false } = {}) {
   });
   log(`  png     ${pngFile}`);
 
-  const card = await renderCard(url, cardFile, log);
-  if (card) log(`  card    ${cardFile}`);
+  try {
+    await renderCard(url, cardFile);
+    log(`  card    ${cardFile}`);
+  } catch (error) {
+    // The plain codes above already encode the new URL. Leaving the old card
+    // beside them is what ships a printed code pointing somewhere else, so it
+    // goes - a missing file is loud, a stale one is not.
+    rmSync(cardFile, { force: true });
+    throw error;
+  }
 
-  return { url, svgFile, pngFile, cardFile: card ? cardFile : null };
+  const manifestFile = join(outDir, MANIFEST_NAME);
+  writeFileSync(
+    manifestFile,
+    `${JSON.stringify(
+      {
+        url,
+        generatedAt: new Date().toISOString().replace(/\.\d{3}Z$/, "Z"),
+        files: Object.fromEntries(
+          [svgFile, pngFile, cardFile].map((file) => [
+            basename(file),
+            digest(file),
+          ]),
+        ),
+      },
+      null,
+      2,
+    )}\n`,
+  );
+  log(`  manifest ${manifestFile}`);
+
+  return { url, svgFile, pngFile, cardFile, manifestFile };
 }
 
 if (
