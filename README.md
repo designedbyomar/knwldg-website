@@ -73,6 +73,7 @@ npm run start    # serve the production build
 npm run lint     # eslint
 npm run test     # Vitest suite once
 npm run test:watch # Vitest in watch mode
+npm run qr       # regenerate the /links QR artwork in public/qr/
 npx tsc --noEmit # typecheck
 ```
 
@@ -88,6 +89,7 @@ components/
 data/           page copy, lists, and the brand colour ramp
 lib/            helpers, Resend client, Zod schemas
 public/brand/   logo, portrait, portrait mask
+public/qr/      generated QR artwork for /links
 ```
 
 Design tokens (colour, type, breakpoints) live in the `@theme` block at the top
@@ -95,6 +97,10 @@ of `app/globals.css`. This is Tailwind v4 — there is no `tailwind.config`.
 
 `/designsystem` serves an internal design-system reference. It is intentionally
 not linked from the nav.
+
+`/links` is the mobile link hub a printed QR code points at. Its artwork lives in
+`public/qr/` and is regenerated with `npm run qr`, which reads the destination
+from `data/contact.ts` so the page and the printed code cannot drift apart.
 
 ## Contributing
 

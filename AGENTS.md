@@ -47,12 +47,14 @@ npm run start    # serve the production build
 npm run lint     # eslint
 npm run test     # Vitest, once
 npm run test:watch
+npm run qr       # regenerate public/qr/ from CONTACT.linksUrl
 npx tsc --noEmit # typecheck
 ```
 
-Vitest covers the booking path only — schema validation, business-date
+Vitest covers the booking path and the link hub — schema validation, business-date
 boundaries, both Redis credential conventions, rate limiting, route ordering,
-honeypot handling and the Resend envelope. **Nothing covers the hero**, so a
+honeypot handling, the Resend envelope, and the /links hrefs plus its QR
+payload. **Nothing covers the hero**, so a
 green run says nothing about the laser rig; verify that visually per rule 3.
 
 `@next/bundle-analyzer` is installed but not wired into `next.config.ts`.
@@ -69,10 +71,15 @@ components/
 data/           page copy and lists, plus the brand colour ramp
 lib/            cn(), resend client, validations/
 public/brand/   logo, portrait, and the alpha-only portrait mask
+public/qr/      generated QR artwork for /links (npm run qr)
 ```
 
 `/designsystem` is a rewrite to `public/designsystem.html` (see
 `next.config.ts`). Internal reference; deliberately not linked from nav.
+
+`/links` is the link hub a printed QR code points at. It ships no client
+component, and `scripts/generate-qr.mjs` reads its URL from `data/contact.ts` —
+a printed code cannot be re-issued, so those two must never drift.
 
 ## Conventions
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-13T05:03:15Z",
+  "generatedAt": "2026-08-26T00:01:55Z",
   "title": "Design System: KNWLDG",
   "extensions": {
     "colorMeta": {
@@ -197,7 +197,7 @@
         }
       },
       "brandMarks": {
-        "instagram": "inlined in components/layout/footer.tsx",
+        "instagram": "inlined in components/ui/instagram-mark.tsx, used by the /links hub",
         "reason": "Lucide ships no brand icons; currentColor requires inline SVG"
       }
     },
@@ -319,7 +319,7 @@
       "kind": "input",
       "refersTo": "location-autocomplete",
       "description": "An assisted venue, city, and address field with full-width helper copy, a square Black suggestion list, Violet active option, one compact OpenStreetMap and Geoapify credit, and manual-entry fallback.",
-      "html": "<label class=\"ds-location\"><span>VENUE / CITY / ADDRESS</span><input value=\"The Society Room\"><div role=\"listbox\"><button role=\"option\" aria-selected=\"true\">THE SOCIETY ROOM OF HARTFORD<small>31 Pratt Street, Hartford, CT 06103</small></button><div class=\"ds-location-credit\"><a href=\"https://www.openstreetmap.org/copyright\">\u00a9 OpenStreetMap contributors</a><span>\u00b7</span><a href=\"https://www.geoapify.com/\">Powered by Geoapify</a></div></div><small class=\"ds-location-helper\">Start typing a venue, city, or address.</small></label>",
+      "html": "<label class=\"ds-location\"><span>VENUE / CITY / ADDRESS</span><input value=\"The Society Room\"><div role=\"listbox\"><button role=\"option\" aria-selected=\"true\">THE SOCIETY ROOM OF HARTFORD<small>31 Pratt Street, Hartford, CT 06103</small></button><div class=\"ds-location-credit\"><a href=\"https://www.openstreetmap.org/copyright\">© OpenStreetMap contributors</a><span>·</span><a href=\"https://www.geoapify.com/\">Powered by Geoapify</a></div></div><small class=\"ds-location-helper\">Start typing a venue, city, or address.</small></label>",
       "css": ".ds-location { position: relative; display: grid; gap: 10px; color: rgb(255 255 255 / 0.50); font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.06em; } .ds-location input { background: transparent; color: var(--color-fg); padding: 0 0 10px; border: 0; border-bottom: 2px solid var(--color-magenta); border-radius: 0; font-family: var(--font-body); } .ds-location [role=listbox] { position: absolute; inset: 100% 0 auto; background: var(--color-bg); border: 1px solid rgb(255 255 255 / 0.15); border-radius: 0; box-shadow: 0 18px 60px rgb(0 0 0 / 0.65); } .ds-location [role=option] { width: 100%; padding: 12px 16px; background: var(--color-violet); color: var(--color-ink); border: 0; text-align: left; font-family: var(--font-ui); } .ds-location small { display: block; margin-top: 4px; opacity: 0.65; } .ds-location-credit { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 16px; font-size: 9px; letter-spacing: 0.04em; } .ds-location-credit a { color: inherit; } .ds-location-helper { width: 100%; font-size: 9px; letter-spacing: 0.04em; }"
     },
     {
@@ -353,6 +353,14 @@
       "description": "One responsive footer plane with a gradient logo and four Violet-icon contact actions. The complete action group stacks below the logo before individual actions may wrap.",
       "html": "<footer class=\"ds-unified-footer\"><img src=\"/brand/knwldg-mark-gradient.svg\" alt=\"KNWLDG\"><nav aria-label=\"Contact KNWLDG\"><a href=\"sms:+18604692202\"><span class=\"violet\">ICON</span>TEXT</a><a href=\"tel:+18604692202\"><span class=\"violet\">ICON</span>CALL</a><a href=\"mailto:hello@djknwldg.com\"><span class=\"violet\">ICON</span>EMAIL</a><a href=\"/knwldg-omar-tavarez.vcf\" download><span class=\"violet\">ICON</span>SAVE CONTACT</a></nav></footer>",
       "css": ".ds-unified-footer { display: flex; flex-direction: column; align-items: center; gap: 20px; background: var(--color-bg); } .ds-unified-footer nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 24px; } .ds-unified-footer a { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; padding: 0 8px; color: var(--color-fg); font-family: var(--font-ui); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; transition: color 150ms ease; } .ds-unified-footer .violet { color: var(--color-violet); } .ds-unified-footer a:hover { color: var(--color-violet); } .ds-unified-footer a:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 2px; } @media (min-width: 640px) { .ds-unified-footer nav { flex-wrap: nowrap; } } @media (min-width: 900px) { .ds-unified-footer { flex-direction: row; justify-content: space-between; gap: 32px; } .ds-unified-footer nav { justify-content: flex-end; } }"
+    },
+    {
+      "name": "Link Hub Row",
+      "kind": "nav",
+      "refersTo": "link-hub-row",
+      "description": "Full-width stacked action for /links, the page a printed QR code points at. One gradient row per page and outline for the rest, 56px minimum height, and press compression in CSS because the route ships no client component.",
+      "html": "<a class=\"ds-link-row ds-link-row-primary\" href=\"/#booking\">ICON<span>BOOK KNWLDG</span></a><a class=\"ds-link-row\" href=\"sms:+18604692202\">ICON<span>TEXT</span><span class=\"value\">860-469-2202</span></a><a class=\"ds-link-row\" href=\"https://instagram.com/djknwldg\">ICON<span>INSTAGRAM</span><span class=\"value\">@djknwldg</span></a>",
+      "css": ".ds-link-row { display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 0 16px; border: 1px solid rgb(255 255 255 / 0.3); background: var(--color-bg); color: var(--color-fg); border-radius: 0; font-family: var(--font-ui); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; transition: border-color 150ms ease, transform 120ms ease; } .ds-link-row svg { width: 20px; height: 20px; flex: none; stroke-width: 1.75; color: var(--color-violet); } .ds-link-row .value { margin-left: auto; font-weight: 400; font-size: 11px; letter-spacing: normal; text-transform: none; color: rgb(255 255 255 / 0.6); } .ds-link-row:hover { border-color: var(--color-fg); } .ds-link-row:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 2px; } .ds-link-row:active { transform: scale(0.98); } .ds-link-row-primary { border: 0; justify-content: center; background: linear-gradient(105deg, var(--color-ultraviolet) 0%, var(--color-violet) 100%); color: var(--color-ink); } .ds-link-row-primary:hover { filter: brightness(1.06); } @media (prefers-reduced-motion: reduce) { .ds-link-row { transition: none; } .ds-link-row:active { transform: none; } }"
     },
     {
       "name": "Open-Format Field",
@@ -429,7 +437,8 @@
       {
         "name": "The Muted Text Floor",
         "body": "text-fg/50 (5.28:1 on black) is the lowest opacity permitted for normal text. /45 measures 4.41:1 and /40 measures 3.66:1; both fail WCAG 1.4.3. The Two-Neutral Rule says to build hierarchy with opacity but never set a limit, and that gap produced four real contrast failures. Disabled and decorative text is exempt."
-      }
+      },
+      "Printed QR codes use pure black modules on white with a 4-module quiet zone and no centre logo. Every brand stop is oklch(0.78 0.19 H) - about 2.5:1 on white - so brand colour goes around a code, never in it."
     ],
     "dos": [
       "**Do** use Black, White, and the five named accent colors only.",

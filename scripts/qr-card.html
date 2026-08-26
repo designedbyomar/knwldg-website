@@ -1,0 +1,142 @@
+<!doctype html>
+<!--
+  Print/signage card for the /links QR code. Rendered to PNG by
+  scripts/generate-qr.mjs, which substitutes the __PLACEHOLDER__ tokens and
+  screenshots this file in headless Chrome - that is what gets it real Anton
+  and Sora instead of a system fallback.
+
+  The code modules stay pure black on white. Every brand stop is
+  oklch(0.78 0.19 H), roughly 2.5:1 on white, well under what a phone camera
+  needs to decode. Brand colour belongs around the code, never in it.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Sora:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ultraviolet: oklch(0.78 0.19 260);
+        --violet: oklch(0.78 0.19 280);
+        --orchid: oklch(0.78 0.19 300);
+        --magenta: oklch(0.78 0.19 320);
+        --rose: oklch(0.78 0.19 340);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        width: 1080px;
+        height: 1350px;
+        background: #000;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 76px 84px 0;
+        overflow: hidden;
+        position: relative;
+      }
+
+      /* The static stand-in for the hero's light rig. */
+      .wash {
+        position: absolute;
+        inset: 0 0 auto;
+        height: 620px;
+        background: radial-gradient(
+          70% 52% at 50% 0%,
+          color-mix(in oklab, var(--violet) 34%, transparent) 0%,
+          transparent 72%
+        );
+      }
+
+      .stack {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+      }
+
+      .mark {
+        width: 380px;
+        height: auto;
+      }
+
+      h1 {
+        font-family: Anton, sans-serif;
+        font-size: 96px;
+        line-height: 0.95;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+        margin-top: 34px;
+      }
+
+      .panel {
+        width: 720px;
+        height: 720px;
+        background: #fff;
+        margin-top: 42px;
+        padding: 26px;
+        display: flex;
+      }
+
+      .panel svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .caption {
+        font-family: Sora, sans-serif;
+        font-weight: 600;
+        font-size: 38px;
+        letter-spacing: 0.08em;
+        margin-top: 44px;
+      }
+
+      .tagline {
+        font-family: Sora, sans-serif;
+        font-size: 22px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgb(255 255 255 / 0.6);
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .bar {
+        position: absolute;
+        inset: auto 0 0;
+        height: 16px;
+        background: linear-gradient(
+          105deg,
+          var(--ultraviolet) 0%,
+          var(--violet) 24%,
+          var(--orchid) 50%,
+          var(--magenta) 76%,
+          var(--rose) 100%
+        );
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wash"></div>
+    <div class="stack">
+      <img class="mark" src="__WORDMARK__" alt="KNWLDG" />
+      <h1>__HEADLINE__</h1>
+      <div class="panel">__QR__</div>
+      <div class="caption">__CAPTION__</div>
+      <div class="tagline">__TAGLINE__</div>
+    </div>
+    <div class="bar"></div>
+  </body>
+</html>

@@ -406,6 +406,17 @@
   .comp-pane-light { background: var(--brand-gradient-diagonal); }
   .demo-chip.selected { border: 1px solid var(--color-violet); background: var(--color-violet); color: var(--color-ink); font-weight: 700; }
 
+  /* Link hub rows: the /links page a printed QR code points at. Full-width
+     actions rather than inline buttons, and the press compression is CSS
+     because that route ships no client component. */
+  .demo-linkrow { display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 0 16px; font-family: 'KD UI', sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .demo-linkrow.gradient { background: var(--brand-gradient-ultraviolet-violet); color: var(--color-ink); justify-content: center; }
+  .demo-linkrow.outline { border: 1px solid rgb(255 255 255 / 0.3); color: var(--color-fg); }
+  .demo-linkrow svg { width: 20px; height: 20px; flex: none; }
+  .demo-linkrow.outline svg { color: var(--color-violet); }
+  .demo-linkrow .value { margin-left: auto; font-weight: 400; font-size: 11px; letter-spacing: normal; text-transform: none; color: rgb(255 255 255 / 0.6); }
+  .demo-linkstack { display: flex; flex-direction: column; gap: 12px; width: min(100%, 360px); }
+
   .demo-location { width: min(100%, 420px); position: relative; }
   .demo-location-input { border-bottom: 2px solid var(--color-magenta); padding: 0 0 10px; font-size: 13px; color: var(--color-fg); }
   .demo-location-menu { margin-top: -1px; border: 1px solid var(--line); background: var(--color-bg); box-shadow: 0 18px 60px rgb(0 0 0 / 0.65); }
@@ -827,6 +838,31 @@
       <p style="font-size: 13px; color: var(--fg-dim); margin: 14px 0 0; max-width: 74ch;"><b style="color: var(--color-fg);">Colour and playback are separate questions.</b> The tile showing colour is whichever is most visible &mdash; <i>image or video</i>. Where the strip scrolls there is often no hover to rely on, so this is the only thing that lifts the duotone; deriving it from playback left photographs tinted permanently. Playback is a strict subset: videos only, one at a time, and stopped when an image becomes active. Every clip is muted, looping, <code>playsInline</code>, <code>preload="none"</code> with a poster. Hover is decided per event from <code>pointerType</code>, and focus is never gated, because hover-only playback is unreachable by keyboard. Reduced motion still reveals colour but never autoplays and drops the active tile's scale &mdash; a cross-fade is not a vestibular trigger.</p>
 
       <p style="font-size: 13px; color: var(--fg-dim); margin: 14px 0 0; max-width: 74ch;"><b style="color: var(--color-fg);">Never gate input on a media query here.</b> Hover is read per event from <code>pointerType</code>, excluding only <code>touch</code>; the <code>IntersectionObserver</code> is gated on being below <code>--breakpoint-content</code>, where the strip is actually a snap scroller. Branching input on <code>(pointer: coarse)</code> was a bug &mdash; that query describes the device's <i>primary</i> pointer, so a touch laptop, an iPad in desktop mode, or an open device toolbar reported coarse, <b style="color: var(--color-fg);">lost hover entirely</b>, and fell through to an observer running against a row where every tile is equally visible and one stays lit permanently. <code>(hover: hover)</code> is a better guess but still a guess about the device; the event is ground truth. The one query left asks about <b style="color: var(--color-fg);">layout</b>, which is all a media query is authoritative on. Ties break on distance from the viewport centre, and a deliberate hover outranks scroll position &mdash; then hands control back on release, because letting go changes no intersection ratio and the observer would otherwise stay silent, stranding the centred tile in the duotone. That handover <b style="color: var(--color-fg);">re-measures the strip</b> rather than reusing the observer's last snapshot &mdash; scrolling while a tile is held moves the strip without crossing a threshold, so a cached position would reveal whichever tile used to be centred. Layout is read only on release, never on the scroll path.</p>
+      <h3>Link Hub Row</h3>
+      <div class="comp-block">
+        <div class="comp-pane">
+          <div class="comp-pane-label">Stacked Actions &middot; /links</div>
+          <div class="demo-linkstack">
+            <div class="demo-linkrow gradient">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Z"/><path d="m9 16 2 2 4-4"/></svg>
+              <span>Book KNWLDG</span>
+            </div>
+            <div class="demo-linkrow outline">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/><path d="M7 8h10M7 12h6"/></svg>
+              <span>Text</span><span class="value">860-469-2202</span>
+            </div>
+            <div class="demo-linkrow outline">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg>
+              <span>Instagram</span><span class="value">@djknwldg</span>
+            </div>
+          </div>
+        </div>
+        <div class="comp-pane">
+          <div class="comp-pane-label">Printed QR &middot; Black Modules Only</div>
+          <p style="max-width: 42ch; margin: 0; font-size: 13px; color: var(--fg-dim);">Every ramp stop is <code>oklch(0.78 0.19 H)</code> &mdash; about 2.5:1 on white, well under what a phone camera can decode. Brand colour goes <b style="color: var(--color-fg);">around</b> the code, never in it, and nothing is punched into the centre, so error correction stays at level M with a full 4-module quiet zone. Generated by <code>node scripts/generate-qr.mjs</code> from one URL the page and the code share.</p>
+        </div>
+      </div>
+      <p style="font-size: 13px; color: var(--fg-dim); margin: -12px 0 28px; max-width: 78ch;"><b style="color: var(--color-fg);">One gradient row per page</b>, same as buttons &mdash; the rest are outline. Rows are 56px minimum, full width, square, and press to 98% on <code>:active</code> rather than through the motion-driven button, because <code>/links</code> ships no client component: it is the one page opened from a camera app on venue Wi-Fi.</p>
     </section>
 
     <section class="doc" id="motion">
