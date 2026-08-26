@@ -332,7 +332,7 @@ Each action uses uppercase Sora, a Violet Lucide icon at the shared `20px` / `1.
 
 ### Link Hub
 
-`/links` is the page a printed QR code points at, and its constraints come from where it is opened: a phone, held at an event, on venue Wi-Fi, from a camera app. It keeps the identity — gradient wordmark, portrait cutout on the shared fade stops, one static Violet wash where the homepage runs its light rig — and drops everything that costs a download.
+`/links` is the page a printed QR code points at, and its constraints come from where it is opened: a phone, held at an event, on venue Wi-Fi, from a camera app. It keeps the identity — the homepage's own framing, with the gradient wordmark running wider than the column behind a portrait cutout on the shared fade stops, and one static Violet wash where the homepage runs its light rig — and drops everything that costs a download.
 
 - **Rows.** Full-width and square-cornered at a `56px` minimum height, with a 1px White border at 30% on Black, a Violet Lucide icon at the shared `20px` / `1.75` token, a White uppercase Sora label, and the muted value right-aligned at White 60%. Hover raises the border to full White; focus keeps the Magenta outline used everywhere else.
 - **One gradient row per page.** `BOOK KNWLDG` takes the Ultraviolet-to-Violet primary treatment with a Black label, and every row below it is outline. The same rule the buttons follow.
